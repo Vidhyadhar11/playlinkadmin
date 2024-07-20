@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:playlinkadmin/loginflow/slottimingedit.dart'; // Import the SlotTimingEditPage
 
 class SlotTimingPage extends StatelessWidget {
   @override
@@ -15,8 +16,7 @@ class SlotTimingPage extends StatelessWidget {
               Navigator.of(context).pop();
             },
           ),
-          title:
-              const Text('Slot Timings', style: TextStyle(color: Colors.white)),
+          title: const Text('Slot Timings', style: TextStyle(color: Colors.white)),
           actions: [
             IconButton(
               icon: const Icon(Icons.edit, color: Colors.white),
@@ -34,27 +34,39 @@ class SlotTimingPage extends StatelessWidget {
                 child: ListView.builder(
                   itemCount: 8, // Number of slots
                   itemBuilder: (context, index) {
-                    return const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            '9 am - 10 am',
-                            style: const TextStyle(
-                                color: Colors.green, fontSize: 16),
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SlotTimingEditPage(
+                              time: '9 am - 10 am', // Pass the selected time
+                              price: 'INR 250', // Pass the price
+                            ),
                           ),
-                          Text(
-                            'INR 250',
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 16),
-                          ),
-                        ],
+                        );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 18.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '9 am - 10 am',
+                              style: TextStyle(color: Colors.green, fontSize: 16),
+                            ),
+                            Text(
+                              'INR 250',
+                              style: TextStyle(color: Colors.white, fontSize: 16),
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   },
                 ),
               ),
+              SizedBox(height: 16), // Add some space before the button
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
