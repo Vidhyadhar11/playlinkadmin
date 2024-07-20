@@ -3,8 +3,6 @@ import 'package:playlinkadmin/loginflow/phn.dart';
 
 import 'package:get/get.dart';
 
-
-
 class Onboarding extends StatefulWidget {
   const Onboarding({Key? key}) : super(key: key);
 
@@ -14,7 +12,7 @@ class Onboarding extends StatefulWidget {
 
 class _OnboardingState extends State<Onboarding> {
   final List<String> imgList = [
-    'assets/Cricket-pana.png', 
+    'assets/Cricket-pana.png',
     'assets/Badminton-bro.png',
     'assets/Beach volleyball-bro.png',
     'assets/Soccer-bro.png',
@@ -57,7 +55,7 @@ class _OnboardingState extends State<Onboarding> {
               ),
             ],
           ),
-          const SizedBox(height:10),
+          const SizedBox(height: 10),
           const Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -99,7 +97,8 @@ class _OnboardingState extends State<Onboarding> {
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.green,
                   backgroundColor: Colors.black,
-                  padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
                   textStyle: const TextStyle(fontSize: 20),
                 ),
                 child: const Icon(Icons.arrow_forward),

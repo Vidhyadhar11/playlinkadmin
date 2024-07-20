@@ -3,7 +3,8 @@ import 'package:get/get.dart';
 import 'package:playlinkadmin/loginflow/splash.dart';
 import 'package:playlinkadmin/loginflow/onboarding.dart';
 import 'package:playlinkadmin/loginflow/phn.dart';
-
+import 'package:playlinkadmin/loginflow/home.dart';
+import 'package:playlinkadmin/loginflow/edit1.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,7 +22,8 @@ class MyApp extends StatelessWidget {
       getPages: [
         GetPage(name: '/', page: () => const SplashScreen()),
         GetPage(name: '/enter-phone', page: () => EnterPhoneNumberScreen()),
-        // GetPage(name: '/home', page: () => HomePage()),
+        GetPage(name: '/home', page: () => HomePage()),
+        GetPage(name: '/turf', page: () => TurfDetailsPage()),
       ],
     );
   }

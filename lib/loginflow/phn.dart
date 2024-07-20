@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart'; // Import GetX package
-
+import 'package:playlinkadmin/loginflow/home.dart';
+import 'package:playlinkadmin/loginflow/edit1.dart'; // Required for TextInputFormatter
 
 class EnterPhoneNumberScreen extends StatefulWidget {
   @override
@@ -9,6 +10,7 @@ class EnterPhoneNumberScreen extends StatefulWidget {
 }
 
 class _EnterPhoneNumberScreenState extends State<EnterPhoneNumberScreen> {
+  // Add this line
   String _maskedPhoneNumber = ''; // Holds the masked phone number
   bool _phoneNumberValid = true; // Validation flag for phone number format
 
@@ -37,7 +39,8 @@ class _EnterPhoneNumberScreenState extends State<EnterPhoneNumberScreen> {
                   keyboardType: TextInputType.phone,
                   inputFormatters: <TextInputFormatter>[
                     FilteringTextInputFormatter.digitsOnly,
-                    LengthLimitingTextInputFormatter(10), // Limit input to 10 digits
+                    LengthLimitingTextInputFormatter(
+                        10), // Limit input to 10 digits
                   ],
                   style: const TextStyle(color: Colors.white),
                   obscureText: true, // Hides entered digits with '*'
@@ -69,22 +72,6 @@ class _EnterPhoneNumberScreenState extends State<EnterPhoneNumberScreen> {
                       style: TextStyle(color: Colors.red),
                     ),
                   ),
-                const SizedBox(height: 20), // Add some space before the new text
-                GestureDetector(
-                  onTap: () {
-                    // Handle create account action here
-                    // Get.to(() => const RegisterScreen()); // Navigate to CreateAccountScreen
-                  },
-                  child: const Text(
-                    'Create Account',
-                    style: TextStyle(
-                      color: Colors.green,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.underline,
-                    ),
-                  ),
-                ),
               ],
             ),
           ),
@@ -94,18 +81,20 @@ class _EnterPhoneNumberScreenState extends State<EnterPhoneNumberScreen> {
             child: GestureDetector(
               onTap: () {
                 // Proceed button logic here
-                _handleProceed();
+                Get.to(() => TurfDetailsPage());
               },
               child: const Row(
-                    children: [
-                      Text('Proceed', style: TextStyle(color: Colors.green,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                children: [
+                  Text('Proceed',
+                      style: TextStyle(
+                        color: Colors.green,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
                       )),
-                      SizedBox(width: 10),
-                      Icon(Icons.arrow_forward, color: Colors.green),
-                    ],
-                  ),
+                  SizedBox(width: 10),
+                  Icon(Icons.arrow_forward, color: Colors.green),
+                ],
+              ),
             ),
           ),
         ],
@@ -117,18 +106,8 @@ class _EnterPhoneNumberScreenState extends State<EnterPhoneNumberScreen> {
   String _getMaskedPhoneNumber(String text) {
     String maskedText = '';
     for (int i = 0; i < text.length; i++) {
-      maskedText += '*'; // Replace each entered digit with '*'
+      maskedText += ''; // Replace each entered digit with ''
     }
     return maskedText;
-  }
-
-  // Handle proceed action (e.g., clear fields)
-  void _handleProceed() {
-    // Add your logic here to handle the proceed action
-    setState(() {
-      _maskedPhoneNumber = ''; // Clear masked phone number
-      _phoneNumberValid = true; // Reset validation state if needed
-    });
-    // Get.to(() => EnterOTPScreen()); // Use GetX for navigation
   }
 }
