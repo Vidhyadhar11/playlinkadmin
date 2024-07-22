@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart'; // Import GetX package
 import 'package:playlinkadmin/loginflow/home.dart';
-import 'package:playlinkadmin/loginflow/edit1.dart'; // Required for TextInputFormatter
+import 'package:playlinkadmin/loginflow/edit1.dart';
+import 'package:playlinkadmin/loginflow/rewards_page.dart'; // Required for TextInputFormatter
 
 class EnterPhoneNumberScreen extends StatefulWidget {
   @override

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:playlinkadmin/loginflow/edit1.dart';
+import 'package:playlinkadmin/loginflow/rewards_page.dart';
 import 'package:playlinkadmin/loginflow/test.dart';
 import 'package:playlinkadmin/uicomponents/cards.dart';
 import 'package:playlinkadmin/uicomponents/elements.dart';// Import the ProfilePage
@@ -190,7 +191,7 @@ class _turfscreenState extends State<turfscreen> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const TestPage()),
+                    MaterialPageRoute(builder: (context) => RewardsPage()),
                   );
                 },
               ),
