@@ -1,8 +1,72 @@
 import 'package:flutter/material.dart';
-import 'package:playlinkadmin/uicomponents/elements.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:playlinkadmin/uicomponents/elements.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  String selectedTab = 'M';
+
+  List<BarChartGroupData> getGraphData() {
+    switch (selectedTab) {
+      case 'D':
+        return [
+          BarChartGroupData(
+              x: 0, barRods: [BarChartRodData(toY: 1, color: Colors.green)]),
+          BarChartGroupData(
+              x: 1, barRods: [BarChartRodData(toY: 2, color: Colors.green)]),
+          BarChartGroupData(
+              x: 2, barRods: [BarChartRodData(toY: 1.5, color: Colors.green)]),
+        ];
+      case 'W':
+        return [
+          BarChartGroupData(
+              x: 0, barRods: [BarChartRodData(toY: 3, color: Colors.green)]),
+          BarChartGroupData(
+              x: 1, barRods: [BarChartRodData(toY: 2.5, color: Colors.green)]),
+          BarChartGroupData(
+              x: 2, barRods: [BarChartRodData(toY: 3.5, color: Colors.green)]),
+        ];
+      case 'M':
+        return [
+          BarChartGroupData(
+              x: 0, barRods: [BarChartRodData(toY: 10, color: Colors.green)]),
+          BarChartGroupData(
+              x: 1, barRods: [BarChartRodData(toY: 2, color: Colors.green)]),
+          BarChartGroupData(
+              x: 2, barRods: [BarChartRodData(toY: 8, color: Colors.green)]),
+          BarChartGroupData(
+              x: 3, barRods: [BarChartRodData(toY: 14, color: Colors.green)]),
+          BarChartGroupData(
+              x: 4, barRods: [BarChartRodData(toY: 15, color: Colors.green)]),
+          BarChartGroupData(
+              x: 5, barRods: [BarChartRodData(toY: 10, color: Colors.green)]),
+          BarChartGroupData(
+              x: 6, barRods: [BarChartRodData(toY: 5, color: Colors.green)]),
+        ];
+      case 'Y':
+        return [
+          BarChartGroupData(
+              x: 0, barRods: [BarChartRodData(toY: 7, color: Colors.green)]),
+          BarChartGroupData(
+              x: 1, barRods: [BarChartRodData(toY: 5, color: Colors.green)]),
+          BarChartGroupData(
+              x: 2, barRods: [BarChartRodData(toY: 6, color: Colors.green)]),
+        ];
+      default:
+        return [];
+    }
+  }
+
+  void onTabSelected(String tab) {
+    setState(() {
+      selectedTab = tab;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -29,7 +93,11 @@ class HomePage extends StatelessWidget {
                 offlineAmount: 'INR 0',
               ),
               const SizedBox(height: 20),
-              BarGraph(),
+              BarGraph(
+                barGroups: getGraphData(),
+                selectedTab: selectedTab,
+                onTabSelected: onTabSelected,
+              ),
               const Spacer(),
             ],
           ),
@@ -102,6 +170,16 @@ class InfoCard extends StatelessWidget {
 }
 
 class BarGraph extends StatelessWidget {
+  final List<BarChartGroupData> barGroups;
+  final String selectedTab;
+  final Function(String) onTabSelected;
+
+  const BarGraph({
+    required this.barGroups,
+    required this.selectedTab,
+    required this.onTabSelected,
+  });
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -112,13 +190,25 @@ class BarGraph extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              ToggleButton(label: 'D', isActive: false),
-              ToggleButton(label: 'W', isActive: false),
-              ToggleButton(label: 'M', isActive: true),
-              ToggleButton(label: 'Y', isActive: false),
+              ToggleButton(
+                  label: 'D',
+                  isActive: selectedTab == 'D',
+                  onTap: () => onTabSelected('D')),
+              ToggleButton(
+                  label: 'W',
+                  isActive: selectedTab == 'W',
+                  onTap: () => onTabSelected('W')),
+              ToggleButton(
+                  label: 'M',
+                  isActive: selectedTab == 'M',
+                  onTap: () => onTabSelected('M')),
+              ToggleButton(
+                  label: 'Y',
+                  isActive: selectedTab == 'Y',
+                  onTap: () => onTabSelected('Y')),
             ],
           ),
           const SizedBox(height: 10),
@@ -127,78 +217,7 @@ class BarGraph extends StatelessWidget {
             child: BarChart(
               BarChartData(
                 maxY: 15,
-                barGroups: [
-                  BarChartGroupData(
-                    x: 0,
-                    barRods: [
-                      BarChartRodData(
-                        toY: 10,
-                        color: Colors.green,
-                        borderRadius: BorderRadius.zero, // Set borderRadius to zero for pointed edges
-                      ),
-                    ],
-                  ),
-                  BarChartGroupData(
-                    x: 1,
-                    barRods: [
-                      BarChartRodData(
-                        toY: 2,
-                        color: Colors.green,
-                        borderRadius: BorderRadius.zero,
-                      ),
-                    ],
-                  ),
-                  BarChartGroupData(
-                    x: 2,
-                    barRods: [
-                      BarChartRodData(
-                        toY: 8,
-                        color: Colors.green,
-                        borderRadius: BorderRadius.zero,
-                      ),
-                    ],
-                  ),
-                  BarChartGroupData(
-                    x: 3,
-                    barRods: [
-                      BarChartRodData(
-                        toY: 14,
-                        color: Colors.green,
-                        borderRadius: BorderRadius.zero,
-                      ),
-                    ],
-                  ),
-                  BarChartGroupData(
-                    x: 4,
-                    barRods: [
-                      BarChartRodData(
-                        toY: 15,
-                        color: Colors.green,
-                        borderRadius: BorderRadius.zero,
-                      ),
-                    ],
-                  ),
-                  BarChartGroupData(
-                    x: 5,
-                    barRods: [
-                      BarChartRodData(
-                        toY: 10,
-                        color: Colors.green,
-                        borderRadius: BorderRadius.zero,
-                      ),
-                    ],
-                  ),
-                  BarChartGroupData(
-                    x: 6,
-                    barRods: [
-                      BarChartRodData(
-                        toY: 5,
-                        color: Colors.green,
-                        borderRadius: BorderRadius.zero,
-                      ),
-                    ],
-                  ),
-                ],
+                barGroups: barGroups,
                 titlesData: FlTitlesData(
                   leftTitles: AxisTitles(
                     sideTitles: SideTitles(
@@ -243,10 +262,10 @@ class BarGraph extends StatelessWidget {
                   ),
                 ),
                 borderData: FlBorderData(
-                  show: false, // Remove the border
+                  show: false,
                 ),
                 gridData: const FlGridData(
-                  show: false, // Remove the background lines
+                  show: false,
                 ),
               ),
             ),
@@ -260,27 +279,32 @@ class BarGraph extends StatelessWidget {
 class ToggleButton extends StatelessWidget {
   final String label;
   final bool isActive;
+  final VoidCallback onTap;
 
   const ToggleButton({
     required this.label,
     required this.isActive,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4.0),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        decoration: BoxDecoration(
-          color: isActive ? Colors.green : Colors.grey[700],
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Text(
-          label,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 12,
+    return GestureDetector(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: isActive ? Colors.green : Colors.grey[700],
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Text(
+            label,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+            ),
           ),
         ),
       ),
