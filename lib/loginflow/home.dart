@@ -20,6 +20,8 @@ class _HomePageState extends State<HomePage> {
               x: 1, barRods: [BarChartRodData(toY: 2, color: Colors.green)]),
           BarChartGroupData(
               x: 2, barRods: [BarChartRodData(toY: 1.5, color: Colors.green)]),
+          BarChartGroupData(
+              x: 3, barRods: [BarChartRodData(toY: 1.5, color: Colors.green)]),
         ];
       case 'W':
         return [
@@ -255,6 +257,16 @@ class BarGraph extends StatelessWidget {
                             return const Text('JUN', style: style);
                           case 6:
                             return const Text('JUL', style: style);
+                          case 7:
+                            return const Text('AUG', style: style);
+                          case 8:
+                            return const Text('SEP', style: style);
+                          case 9:
+                            return const Text('OCT', style: style);
+                          case 10:
+                            return const Text('NOV', style: style);
+                          case 11:
+                            return const Text('DEC', style: style); 
                         }
                         return const Text('', style: style);
                       },
