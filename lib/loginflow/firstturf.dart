@@ -61,7 +61,7 @@ class _NewTurfPageState extends State<NewTurfPage> {
             children: [
               // Heading
               const Text(
-                'Venue Selection',
+                'Create Venue',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 24,
