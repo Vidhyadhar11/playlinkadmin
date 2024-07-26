@@ -72,6 +72,7 @@ class _NewTurfPageState extends State<NewTurfPage> {
               
               // Dropdown for Category
               DropdownButtonFormField<String>(
+                dropdownColor: Colors.grey[900],
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: Colors.grey[900],
@@ -84,7 +85,7 @@ class _NewTurfPageState extends State<NewTurfPage> {
                 items: ['Category 1', 'Category 2']
                     .map((category) => DropdownMenuItem(
                           value: category,
-                          child: Text(category, style: const TextStyle(color: Colors.black)),
+                          child: Text(category, style: const TextStyle(color: Colors.white)),
                         ))
                     .toList(),
                 onChanged: (value) {},
@@ -108,6 +109,7 @@ class _NewTurfPageState extends State<NewTurfPage> {
 
               // Dropdown for Location
               DropdownButtonFormField<String>(
+                dropdownColor: Colors.grey[900],
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: Colors.grey[900],
@@ -120,7 +122,7 @@ class _NewTurfPageState extends State<NewTurfPage> {
                 items: ['Location 1', 'Location 2']
                     .map((location) => DropdownMenuItem(
                           value: location,
-                          child: Text(location, style: const TextStyle(color: Colors.black)),
+                          child: Text(location, style: const TextStyle(color: Colors.white)),
                         ))
                     .toList(),
                 onChanged: (value) {},
@@ -177,6 +179,7 @@ class _NewTurfPageState extends State<NewTurfPage> {
 
               // Amenities MultiSelect
               MultiSelectDialogField(
+                backgroundColor: Colors.grey[900],
                 items: _amenities.map((e) => MultiSelectItem(e, e)).toList(),
                 title: const Text('Amenities', style: TextStyle(color: Colors.white)),
                 selectedColor: Colors.green,
@@ -188,10 +191,12 @@ class _NewTurfPageState extends State<NewTurfPage> {
                     width: 1,
                   ),
                 ),
+                buttonIcon: const Icon(Icons.arrow_drop_down, color: Colors.white),
                 buttonText: const Text(
                   'Select Amenities',
                   style: TextStyle(color: Colors.white),
                 ),
+                itemsTextStyle: const TextStyle(color: Colors.white),
                 onConfirm: (values) {
                   setState(() {
                     _selectedAmenities = values.cast<String>();

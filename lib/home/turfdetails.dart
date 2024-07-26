@@ -64,15 +64,6 @@ class TurfDetailsPage extends StatelessWidget {
                               child: const Text('Football', style: TextStyle(color: Colors.white)),
                             ),
                           ),
-                          Positioned(
-                            bottom: 10,
-                            right: 10,
-                            child: Container(
-                              color: Colors.black54,
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                              child: const Text('15% Off', style: TextStyle(color: Colors.white)),
-                            ),
-                          ),
                         ],
                       ),
                     ),
