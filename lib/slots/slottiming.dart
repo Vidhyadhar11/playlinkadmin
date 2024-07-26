@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:playlinkadmin/loginflow/slottimingedit.dart'; // Import the SlotTimingEditPage
+import 'package:playlinkadmin/slots/slottimingedit.dart'; // Import the SlotTimingEditPage
 
 class SlotTimingPage extends StatelessWidget {
   @override

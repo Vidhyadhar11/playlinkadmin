@@ -116,40 +116,6 @@ class TurfPage extends StatelessWidget {
                 ),
                 style: const TextStyle(color: Colors.white),
               ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.grey[900],
-                        labelText: 'Images',
-                        labelStyle: const TextStyle(color: Colors.white),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.grey[900],
-                        labelText: 'Slots',
-                        labelStyle: const TextStyle(color: Colors.white),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ],
-              ),
             ],
           ),
         ),

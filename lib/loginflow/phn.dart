@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart'; // Import GetX package
-import 'package:playlinkadmin/loginflow/home.dart';
-import 'package:playlinkadmin/loginflow/edit1.dart';
-import 'package:playlinkadmin/loginflow/rewards_page.dart'; // Required for TextInputFormatter
+import 'package:playlinkadmin/home/home.dart';
+import 'package:playlinkadmin/loginflow/firstturf.dart'; // Required for TextInputFormatter
 
 class EnterPhoneNumberScreen extends StatefulWidget {
   @override
@@ -82,7 +81,7 @@ class _EnterPhoneNumberScreenState extends State<EnterPhoneNumberScreen> {
             child: GestureDetector(
               onTap: () {
                 // Proceed button logic here
-                Get.to(() => TurfDetailsPage());
+                Get.to(() => NewTurfPage());
               },
               child: const Row(
                 children: [

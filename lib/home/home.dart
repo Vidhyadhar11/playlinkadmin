@@ -22,6 +22,12 @@ class _HomePageState extends State<HomePage> {
               x: 2, barRods: [BarChartRodData(toY: 1.5, color: Colors.green)]),
           BarChartGroupData(
               x: 3, barRods: [BarChartRodData(toY: 1.5, color: Colors.green)]),
+          BarChartGroupData(
+              x: 4, barRods: [BarChartRodData(toY: 1.5, color: Colors.green)]),
+          BarChartGroupData(
+              x: 5, barRods: [BarChartRodData(toY: 1.5, color: Colors.green)]),
+          BarChartGroupData(
+              x: 6, barRods: [BarChartRodData(toY: 1.5, color: Colors.green)]),
         ];
       case 'W':
         return [
@@ -47,7 +53,17 @@ class _HomePageState extends State<HomePage> {
           BarChartGroupData(
               x: 5, barRods: [BarChartRodData(toY: 10, color: Colors.green)]),
           BarChartGroupData(
-              x: 6, barRods: [BarChartRodData(toY: 5, color: Colors.green)]),
+              x: 6, barRods: [BarChartRodData(toY: 7, color: Colors.green)]),
+          BarChartGroupData(
+              x: 7, barRods: [BarChartRodData(toY: 5, color: Colors.green)]),
+          BarChartGroupData(
+              x: 8, barRods: [BarChartRodData(toY: 5, color: Colors.green)]),
+          BarChartGroupData(
+              x: 9, barRods: [BarChartRodData(toY: 5, color: Colors.green)]),
+          BarChartGroupData(
+              x: 10, barRods: [BarChartRodData(toY: 5, color: Colors.green)]),
+          BarChartGroupData(
+              x: 11, barRods: [BarChartRodData(toY: 5, color: Colors.green)]),
         ];
       case 'Y':
         return [

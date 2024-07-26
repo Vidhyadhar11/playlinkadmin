@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:playlinkadmin/loginflow/splash.dart';
 import 'package:playlinkadmin/loginflow/phn.dart';
-import 'package:playlinkadmin/loginflow/home.dart';
-import 'package:playlinkadmin/loginflow/edit1.dart';
+import 'package:playlinkadmin/home/home.dart';
+import 'package:playlinkadmin/home/turfdetails.dart';
 
 void main() {
   runApp(const MyApp());

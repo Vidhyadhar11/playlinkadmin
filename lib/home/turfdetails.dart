@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:playlinkadmin/loginflow/edit.dart';
-import 'package:playlinkadmin/loginflow/slottiming.dart';
+import 'package:playlinkadmin/home/edit.dart';
+import 'package:playlinkadmin/slots/slottiming.dart';
 
 class TurfDetailsPage extends StatelessWidget {
   @override
@@ -17,6 +17,17 @@ class TurfDetailsPage extends StatelessWidget {
               Navigator.of(context).pop();
             },
           ),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.edit, color: Colors.white),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => TurfPage()),
+                );
+              },
+            ),
+          ],
         ),
         body: Column(
           children: [
@@ -26,18 +37,24 @@ class TurfDetailsPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Image and location
+                    // Placeholder image and location
                     Container(
+                      height: 200,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8.0),
-                        image: const DecorationImage(
-                          image: AssetImage('assets/images/turf_image.png'),
-                          fit: BoxFit.cover,
-                        ),
+                        color: Colors.grey[800],
                       ),
-                      height: 200,
                       child: Stack(
                         children: [
+                          Positioned.fill(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8.0),
+                              child: Image.network(
+                                'https://via.placeholder.com/150',
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
                           Positioned(
                             bottom: 10,
                             left: 10,
@@ -81,7 +98,12 @@ class TurfDetailsPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
                     const Text(
-                      'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.',
+                      'Venue Info',
+                      style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 10),
+                    const Text(
+                      '• Wooden Flooring\n• Non-Marking Shoes Only\n• Equipment Provided',
                       style: TextStyle(color: Colors.white54, fontSize: 14),
                     ),
                     const SizedBox(height: 20),
