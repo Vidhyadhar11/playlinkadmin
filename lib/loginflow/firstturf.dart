@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:playlinkadmin/home/home.dart';
 
 class NewTurfPage extends StatefulWidget {
@@ -177,35 +176,50 @@ class _NewTurfPageState extends State<NewTurfPage> {
               ),
               const SizedBox(height: 50),
 
-              // Amenities MultiSelect
-              MultiSelectDialogField(
-                backgroundColor: Colors.grey[900],
-                items: _amenities.map((e) => MultiSelectItem(e, e)).toList(),
-                title: const Text('Amenities', style: TextStyle(color: Colors.white)),
-                selectedColor: Colors.green,
-                decoration: BoxDecoration(
-                  color: Colors.grey[900],
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                    color: Colors.grey,
-                    width: 1,
+              // Amenities Dropdown
+              DropdownButtonFormField<String>(
+                isExpanded: true,
+                dropdownColor: Colors.grey[900],
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.grey[900],
+                  labelText: 'Select Amenities',
+                  labelStyle: const TextStyle(color: Colors.white),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                buttonIcon: const Icon(Icons.arrow_drop_down, color: Colors.white),
-                buttonText: const Text(
-                  'Select Amenities',
-                  style: TextStyle(color: Colors.white),
-                ),
-                itemsTextStyle: const TextStyle(color: Colors.white),
-                onConfirm: (values) {
+                items: _amenities
+                    .map((amenity) => DropdownMenuItem(
+                          value: amenity,
+                          child: Text(amenity, style: const TextStyle(color: Colors.white)),
+                        ))
+                    .toList(),
+                onChanged: (value) {
                   setState(() {
-                    _selectedAmenities = values.cast<String>();
+                    if (_selectedAmenities.contains(value)) {
+                      _selectedAmenities.remove(value);
+                    } else {
+                      _selectedAmenities.add(value!);
+                    }
                   });
                 },
-                chipDisplay: MultiSelectChipDisplay(
-                  chipColor: Colors.grey[800],
-                  textStyle: const TextStyle(color: Colors.white),
-                ),
+                value: null,
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8.0,
+                children: _selectedAmenities
+                    .map((amenity) => Chip(
+                          backgroundColor: Colors.grey[800],
+                          label: Text(amenity, style: const TextStyle(color: Colors.white)),
+                          onDeleted: () {
+                            setState(() {
+                              _selectedAmenities.remove(amenity);
+                            });
+                          },
+                        ))
+                    .toList(),
               ),
             ],
           ),
