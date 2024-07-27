@@ -37,6 +37,10 @@ class _HomePageState extends State<HomePage> {
               x: 1, barRods: [BarChartRodData(toY: 2.5, color: Colors.green)]),
           BarChartGroupData(
               x: 2, barRods: [BarChartRodData(toY: 3.5, color: Colors.green)]),
+          BarChartGroupData(
+              x: 3, barRods: [BarChartRodData(toY: 4, color: Colors.green)]),
+          BarChartGroupData(
+              x: 4, barRods: [BarChartRodData(toY: 3.8, color: Colors.green)]),
         ];
       case 'M':
         return [
@@ -73,6 +77,10 @@ class _HomePageState extends State<HomePage> {
               x: 1, barRods: [BarChartRodData(toY: 5, color: Colors.green)]),
           BarChartGroupData(
               x: 2, barRods: [BarChartRodData(toY: 6, color: Colors.green)]),
+          BarChartGroupData(
+              x: 3, barRods: [BarChartRodData(toY: 4, color: Colors.green)]),
+          BarChartGroupData(
+              x: 4, barRods: [BarChartRodData(toY: 5, color: Colors.green)]),
         ];
       default:
         return [];
@@ -258,31 +266,76 @@ class BarGraph extends StatelessWidget {
                           color: Colors.white,
                           fontSize: 12,
                         );
-                        switch (value.toInt()) {
-                          case 0:
-                            return const Text('JAN', style: style);
-                          case 1:
-                            return const Text('FEB', style: style);
-                          case 2:
-                            return const Text('MAR', style: style);
-                          case 3:
-                            return const Text('APR', style: style);
-                          case 4:
-                            return const Text('MAY', style: style);
-                          case 5:
-                            return const Text('JUN', style: style);
-                          case 6:
-                            return const Text('JUL', style: style);
-                          case 7:
-                            return const Text('AUG', style: style);
-                          case 8:
-                            return const Text('SEP', style: style);
-                          case 9:
-                            return const Text('OCT', style: style);
-                          case 10:
-                            return const Text('NOV', style: style);
-                          case 11:
-                            return const Text('DEC', style: style); 
+                        if (selectedTab == 'D') {
+                          switch (value.toInt()) {
+                            case 0:
+                              return const Text('Mon', style: style);
+                            case 1:
+                              return const Text('Tue', style: style);
+                            case 2:
+                              return const Text('Wed', style: style);
+                            case 3:
+                              return const Text('Thu', style: style);
+                            case 4:
+                              return const Text('Fri', style: style);
+                            case 5:
+                              return const Text('Sat', style: style);
+                            case 6:
+                              return const Text('Sun', style: style);
+                          }
+                        } else if (selectedTab == 'W') {
+                          switch (value.toInt()) {
+                            case 0:
+                              return const Text('Week 1', style: style);
+                            case 1:
+                              return const Text('Week 2', style: style);
+                            case 2:
+                              return const Text('Week 3', style: style);
+                            case 3:
+                              return const Text('Week 4', style: style);
+                            case 4:
+                              return const Text('Week 5', style: style);
+                          }
+                        } else if (selectedTab == 'M') {
+                          switch (value.toInt()) {
+                            case 0:
+                              return const Text('Jan', style: style);
+                            case 1:
+                              return const Text('Feb', style: style);
+                            case 2:
+                              return const Text('Mar', style: style);
+                            case 3:
+                              return const Text('Apr', style: style);
+                            case 4:
+                              return const Text('May', style: style);
+                            case 5:
+                              return const Text('Jun', style: style);
+                            case 6:
+                              return const Text('Jul', style: style);
+                            case 7:
+                              return const Text('Aug', style: style);
+                            case 8:
+                              return const Text('Sep', style: style);
+                            case 9:
+                              return const Text('Oct', style: style);
+                            case 10:
+                              return const Text('Nov', style: style);
+                            case 11:
+                              return const Text('Dec', style: style);
+                          }
+                        } else if (selectedTab == 'Y') {
+                          switch (value.toInt()) {
+                            case 0:
+                              return const Text('2020', style: style);
+                            case 1:
+                              return const Text('2021', style: style);
+                            case 2:
+                              return const Text('2022', style: style);
+                            case 3:
+                              return const Text('2023', style: style);
+                            case 4:
+                              return const Text('2024', style: style);
+                          }
                         }
                         return const Text('', style: style);
                       },
