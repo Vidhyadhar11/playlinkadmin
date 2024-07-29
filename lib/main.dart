@@ -20,9 +20,9 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       getPages: [
         GetPage(name: '/', page: () => const SplashScreen()),
-        GetPage(name: '/enter-phone', page: () => EnterPhoneNumberScreen()),
-        GetPage(name: '/home', page: () => HomePage()),
-        GetPage(name: '/turf', page: () => TurfDetailsPage()),
+        GetPage(name: '/enter-phone', page: () => const EnterPhoneNumberScreen()),
+        GetPage(name: '/home', page: () => const HomePage()),
+        GetPage(name: '/turf', page: () => const TurfDetailsPage()),
       ],
     );
   }

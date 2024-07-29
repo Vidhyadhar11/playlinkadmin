@@ -83,10 +83,10 @@ class CustomNavBar extends StatelessWidget {
             Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
             break;
           case 1:
-            Navigator.push(context, MaterialPageRoute(builder: (context) => turfscreen()));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const turfscreen()));
             break;
           case 2:
-            Navigator.push(context, MaterialPageRoute(builder: (context) =>  TurfPage()));
+            Navigator.push(context, MaterialPageRoute(builder: (context) =>  const TurfPage()));
             break;
         }
       },

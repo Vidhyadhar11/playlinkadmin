@@ -80,7 +80,7 @@ class _EnterPhoneNumberScreenState extends State<EnterPhoneNumberScreen> {
             child: GestureDetector(
               onTap: () {
                 // Proceed button logic here
-                Get.to(() => NewTurfPage());
+                Get.to(() => const NewTurfPage());
               },
               child: const Row(
                 children: [

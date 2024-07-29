@@ -26,7 +26,7 @@ class SportsFieldCard extends StatefulWidget {
   final SportsField sportsField;
   final VoidCallback onTap;
 
-  const SportsFieldCard({Key? key, required this.sportsField, required this.onTap}) : super(key: key);
+  const SportsFieldCard({super.key, required this.sportsField, required this.onTap});
 
   @override
   _SportsFieldCardState createState() => _SportsFieldCardState();

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:playlinkadmin/slots/slottimingedit.dart'; // Import the SlotTimingEditPage
 
 class SlotTimingPage extends StatelessWidget {
+  const SlotTimingPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -46,14 +48,14 @@ class SlotTimingPage extends StatelessWidget {
                           ),
                         );
                       },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 18.0),
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 18.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
                               '9 am - 10 am',
-                              style: TextStyle(color: Colors.green, fontSize: 16),
+                              style: const TextStyle(color: Colors.green, fontSize: 16),
                             ),
                             Text(
                               'INR 250',
@@ -66,7 +68,7 @@ class SlotTimingPage extends StatelessWidget {
                   },
                 ),
               ),
-              SizedBox(height: 16), // Add some space before the button
+              const SizedBox(height: 16), // Add some space before the button
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(

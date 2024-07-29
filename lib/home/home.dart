@@ -3,6 +3,8 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:playlinkadmin/uicomponents/elements.dart';
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -141,7 +143,7 @@ class InfoCard extends StatelessWidget {
   final String onlineAmount;
   final String offlineAmount;
 
-  const InfoCard({
+  const InfoCard({super.key, 
     required this.title,
     required this.onlineAmount,
     required this.offlineAmount,
@@ -200,7 +202,7 @@ class BarGraph extends StatelessWidget {
   final String selectedTab;
   final Function(String) onTabSelected;
 
-  const BarGraph({
+  const BarGraph({super.key, 
     required this.barGroups,
     required this.selectedTab,
     required this.onTabSelected,
@@ -362,7 +364,7 @@ class ToggleButton extends StatelessWidget {
   final bool isActive;
   final VoidCallback onTap;
 
-  const ToggleButton({
+  const ToggleButton({super.key, 
     required this.label,
     required this.isActive,
     required this.onTap,

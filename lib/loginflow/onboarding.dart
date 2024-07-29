@@ -4,7 +4,7 @@ import 'package:playlinkadmin/loginflow/phn.dart';
 import 'package:get/get.dart';
 
 class Onboarding extends StatefulWidget {
-  const Onboarding({Key? key}) : super(key: key);
+  const Onboarding({super.key});
 
   @override
   _OnboardingState createState() => _OnboardingState();
@@ -92,7 +92,7 @@ class _OnboardingState extends State<Onboarding> {
             children: [
               ElevatedButton(
                 onPressed: () {
-                  Get.to(() => EnterPhoneNumberScreen());
+                  Get.to(() => const EnterPhoneNumberScreen());
                 },
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.green,
@@ -114,7 +114,7 @@ class _OnboardingState extends State<Onboarding> {
 class CarouselImage extends StatefulWidget {
   final String imagePath;
 
-  const CarouselImage({Key? key, required this.imagePath}) : super(key: key);
+  const CarouselImage({super.key, required this.imagePath});
 
   @override
   _CarouselImageState createState() => _CarouselImageState();
@@ -123,13 +123,11 @@ class CarouselImage extends StatefulWidget {
 class _CarouselImageState extends State<CarouselImage> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Center(
-        child: Image.asset(
-          widget.imagePath,
-          fit: BoxFit.cover,
-          width: MediaQuery.of(context).size.width,
-        ),
+    return Center(
+      child: Image.asset(
+        widget.imagePath,
+        fit: BoxFit.cover,
+        width: MediaQuery.of(context).size.width,
       ),
     );
   }

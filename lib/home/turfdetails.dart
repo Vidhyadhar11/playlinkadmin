@@ -3,6 +3,8 @@ import 'package:playlinkadmin/home/edit.dart';
 import 'package:playlinkadmin/slots/slottiming.dart';
 
 class TurfDetailsPage extends StatelessWidget {
+  const TurfDetailsPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -23,7 +25,7 @@ class TurfDetailsPage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => TurfPage()),
+                  MaterialPageRoute(builder: (context) => const TurfPage()),
                 );
               },
             ),
@@ -132,7 +134,7 @@ class TurfDetailsPage extends StatelessWidget {
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => TurfPage()),
+                                MaterialPageRoute(builder: (context) => const TurfPage()),
                               );
                             },
                             style: ElevatedButton.styleFrom(
@@ -210,7 +212,7 @@ class AmenityWidget extends StatelessWidget {
   final IconData icon;
   final String label;
 
-  const AmenityWidget({
+  const AmenityWidget({super.key, 
     required this.icon,
     required this.label,
   });

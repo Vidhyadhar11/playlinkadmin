@@ -4,7 +4,7 @@ class SlotTimingEditPage extends StatelessWidget {
   final String time;
   final String price;
 
-  SlotTimingEditPage({required this.time, required this.price});
+  const SlotTimingEditPage({super.key, required this.time, required this.price});
 
   @override
   Widget build(BuildContext context) {
@@ -26,15 +26,15 @@ class SlotTimingEditPage extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
             children: [
-              SizedBox(height: 20), // Adjust to match spacing in the image
+              const SizedBox(height: 20), // Adjust to match spacing in the image
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     time,
-                    style: TextStyle(color: Colors.white, fontSize: 24),
+                    style: const TextStyle(color: Colors.white, fontSize: 24),
                   ),
-                  SizedBox(width: 8),
+                  const SizedBox(width: 8),
                   IconButton(
                     icon: const Icon(Icons.edit, color: Colors.white),
                     onPressed: () {
@@ -43,15 +43,15 @@ class SlotTimingEditPage extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     price,
-                    style: TextStyle(color: Colors.white, fontSize: 24),
+                    style: const TextStyle(color: Colors.white, fontSize: 24),
                   ),
-                  SizedBox(width: 8),
+                  const SizedBox(width: 8),
                   IconButton(
                     icon: const Icon(Icons.edit, color: Colors.white),
                     onPressed: () {
@@ -60,7 +60,7 @@ class SlotTimingEditPage extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(height: 40), // Adjust to match spacing in the image
+              const SizedBox(height: 40), // Adjust to match spacing in the image
               SizedBox(
                 width: 150,
                 child: ElevatedButton(
@@ -80,7 +80,7 @@ class SlotTimingEditPage extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 50), // Reduced spacing
+              const SizedBox(height: 50), // Reduced spacing
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
