@@ -10,7 +10,7 @@ class NewTurfPage extends StatefulWidget {
 }
 
 class _NewTurfPageState extends State<NewTurfPage> {
-  List<String> _selectedAmenities = [];
+  final List<String> _selectedAmenities = [];
   final List<String> _amenities = [
     'UPI Accepted',
     'Card Accepted',

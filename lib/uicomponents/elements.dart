@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:playlinkadmin/home/edit.dart';
 import 'package:playlinkadmin/home/home.dart';
-import 'package:playlinkadmin/loginflow/test.dart';
 import 'package:playlinkadmin/home/turfpage.dart';
 
 class CustomTextField extends StatelessWidget {
@@ -69,7 +68,6 @@ class CustomNavBar extends StatelessWidget {
             _buildNavItem(Icons.home, 0, context),
             _buildNavItem(Icons.sports_soccer, 1, context),
             _buildNavItem(Icons.event, 2, context),
-            _buildNavItem(Icons.people, 3, context),
           ],
         ),
       ),
@@ -89,9 +87,6 @@ class CustomNavBar extends StatelessWidget {
             break;
           case 2:
             Navigator.push(context, MaterialPageRoute(builder: (context) =>  TurfPage()));
-            break;
-          case 3:
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const TestPage()));
             break;
         }
       },
