@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class TurfPage extends StatefulWidget {
+  const TurfPage({super.key});
+
   @override
   _TurfPageState createState() => _TurfPageState();
 }
@@ -30,8 +32,6 @@ class _TurfPageState extends State<TurfPage> {
     if (time == null) {
       return 'Select Time';
     }
-    final now = DateTime.now();
-    final dt = DateTime(now.year, now.month, now.day, time.hour, time.minute);
     final format = MaterialLocalizations.of(context).formatTimeOfDay(time);
     return format;
   }

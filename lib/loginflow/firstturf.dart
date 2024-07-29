@@ -42,8 +42,7 @@ class _NewTurfPageState extends State<NewTurfPage> {
     if (time == null) {
       return 'Select Time';
     }
-    final now = DateTime.now();
-    final dt = DateTime(now.year, now.month, now.day, time.hour, time.minute);
+    
     final format = MaterialLocalizations.of(context).formatTimeOfDay(time);
     return format;
   }

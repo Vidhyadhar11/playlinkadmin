@@ -36,7 +36,6 @@ class _turfscreenState extends State<turfscreen> {
 
   List<SportsField> filteredSportsFields = [];
   bool isPressed =false;
-  int _currentIndex = 0;
   TextEditingController searchController = TextEditingController();
 
   @override

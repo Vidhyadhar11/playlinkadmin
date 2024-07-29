@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart'; // Import GetX package
-import 'package:playlinkadmin/loginflow/firstturf.dart'; // Required for TextInputFormatter
+import 'package:get/get.dart';
+import 'package:playlinkadmin/loginflow/firstturf.dart';
 
 class EnterPhoneNumberScreen extends StatefulWidget {
   @override
@@ -9,9 +9,9 @@ class EnterPhoneNumberScreen extends StatefulWidget {
 }
 
 class _EnterPhoneNumberScreenState extends State<EnterPhoneNumberScreen> {
-  // Add this line
-  String _maskedPhoneNumber = ''; // Holds the masked phone number
-  bool _phoneNumberValid = true; // Validation flag for phone number format
+
+  String _maskedPhoneNumber = '';
+  bool _phoneNumberValid = true;
 
   @override
   Widget build(BuildContext context) {
