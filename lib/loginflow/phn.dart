@@ -4,13 +4,15 @@ import 'package:get/get.dart';
 import 'package:playlinkadmin/loginflow/firstturf.dart';
 
 class EnterPhoneNumberScreen extends StatefulWidget {
+  const EnterPhoneNumberScreen({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _EnterPhoneNumberScreenState createState() => _EnterPhoneNumberScreenState();
 }
 
 class _EnterPhoneNumberScreenState extends State<EnterPhoneNumberScreen> {
 
-  String _maskedPhoneNumber = '';
   bool _phoneNumberValid = true;
 
   @override
@@ -33,16 +35,16 @@ class _EnterPhoneNumberScreenState extends State<EnterPhoneNumberScreen> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+
                 const SizedBox(height: 20),
                 TextField(
                   keyboardType: TextInputType.phone,
                   inputFormatters: <TextInputFormatter>[
                     FilteringTextInputFormatter.digitsOnly,
-                    LengthLimitingTextInputFormatter(
-                        10), // Limit input to 10 digits
+                    LengthLimitingTextInputFormatter(10),
                   ],
                   style: const TextStyle(color: Colors.white),
-                  obscureText: true, // Hides entered digits with '*'
+                  obscureText: true,
                   decoration: const InputDecoration(
                     labelText: 'Mobile Number',
                     labelStyle: TextStyle(color: Colors.white),
@@ -56,9 +58,7 @@ class _EnterPhoneNumberScreenState extends State<EnterPhoneNumberScreen> {
                   onChanged: (value) {
                     setState(() {
                       _phoneNumberValid =
-                          value.length == 10; // Validate phone number format
-                      _maskedPhoneNumber =
-                          _getMaskedPhoneNumber(value); // Mask entered digits
+                          value.length == 10; 
                     });
                   },
                 ),
@@ -99,14 +99,5 @@ class _EnterPhoneNumberScreenState extends State<EnterPhoneNumberScreen> {
         ],
       ),
     );
-  }
-
-  // Function to mask entered phone number with asterisks
-  String _getMaskedPhoneNumber(String text) {
-    String maskedText = '';
-    for (int i = 0; i < text.length; i++) {
-      maskedText += ''; // Replace each entered digit with ''
-    }
-    return maskedText;
   }
 }
