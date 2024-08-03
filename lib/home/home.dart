@@ -8,30 +8,33 @@ class HomePage extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.black,
-        body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              const SizedBox(height: 40),
-              const Text(
-                'Gross Transaction Value (GTV)',
-                style: TextStyle(color: Colors.green, fontSize: 20),
-              ),
-              const SizedBox(height: 20),
-              const InfoCard(
-                title: 'Bookings (GTV)',
-                onlineAmount: 'INR 1,500',
-                offlineAmount: 'INR 0',
-              ),
-              const InfoCard(
-                title: 'Cancellation (GTV)',
-                onlineAmount: 'INR 0',
-                offlineAmount: 'INR 0',
-              ),
-              const SizedBox(height: 20),
-              BarGraph(),
-              const Spacer(),
-            ],
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                const SizedBox(height: 40),
+                const Text(
+                  'Gross Transaction Value (GTV)',
+                  style: TextStyle(color: Colors.green, fontSize: 20),
+                ),
+                const SizedBox(height: 20),
+                const InfoCard(
+                  title: 'Bookings (GTV)',
+                  onlineAmount: 'INR 1,500',
+                  offlineAmount: 'INR 0',
+                ),
+                const SizedBox(height: 10),
+                const InfoCard(
+                  title: 'Cancellation (GTV)',
+                  onlineAmount: 'INR 0',
+                  offlineAmount: 'INR 0',
+                ),
+                const SizedBox(height: 20),
+                BarGraph(),
+                const SizedBox(height: 20), // Add some bottom padding
+              ],
+            ),
           ),
         ),
         bottomNavigationBar: const CustomNavBar(

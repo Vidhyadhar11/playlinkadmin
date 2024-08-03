@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:playlinkadmin/loginflow/edit.dart';
-import 'package:playlinkadmin/loginflow/home.dart';
-import 'package:playlinkadmin/loginflow/test.dart';
-import 'package:playlinkadmin/loginflow/turfpage.dart';
+import 'package:playlinkadmin/home/addturf.dart';
+import 'package:playlinkadmin/home/home.dart';
+import 'package:playlinkadmin/home/test.dart';
+import 'package:playlinkadmin/home/turfpage.dart';
 
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -69,7 +69,7 @@ class CustomNavBar extends StatelessWidget {
             _buildNavItem(Icons.home, 0, context),
             _buildNavItem(Icons.sports_soccer, 1, context),
             _buildNavItem(Icons.event, 2, context),
-            _buildNavItem(Icons.people, 3, context),
+            // _buildNavItem(Icons.people, 3, context),
           ],
         ),
       ),

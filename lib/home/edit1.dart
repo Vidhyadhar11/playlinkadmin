@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:playlinkadmin/loginflow/edit.dart';
-import 'package:playlinkadmin/loginflow/slottiming.dart';
+import 'package:playlinkadmin/home/addturf.dart';
+import 'package:playlinkadmin/home/slottiming.dart';
 
 class TurfDetailsPage extends StatelessWidget {
   @override

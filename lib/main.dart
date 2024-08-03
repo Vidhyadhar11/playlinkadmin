@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:playlinkadmin/loginflow/splash.dart';
-import 'package:playlinkadmin/loginflow/onboarding.dart';
-import 'package:playlinkadmin/loginflow/phn.dart';
-import 'package:playlinkadmin/loginflow/home.dart';
-import 'package:playlinkadmin/loginflow/edit1.dart';
+import 'package:playlinkadmin/onboarding/splash.dart';
+import 'package:playlinkadmin/onboarding/onboarding.dart';
+import 'package:playlinkadmin/onboarding/phn.dart';
+import 'package:playlinkadmin/home/home.dart';
+import 'package:playlinkadmin/home/edit1.dart';
+import 'package:playlinkadmin/models/mycontroller.dart';
 
 void main() {
+  Get.put(Mycontroller());
   runApp(const MyApp());
 }
 
@@ -18,7 +20,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Sporty App',
-      initialRoute: '/',
+      initialRoute: '/home',
       getPages: [
         GetPage(name: '/', page: () => const SplashScreen()),
         GetPage(name: '/enter-phone', page: () => EnterPhoneNumberScreen()),
