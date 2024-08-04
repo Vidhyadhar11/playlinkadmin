@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:playlinkadmin/home/turfdetails.dart';
 import 'package:playlinkadmin/uicomponents/cards.dart';
-import 'package:playlinkadmin/uicomponents/elements.dart'; // Import the ProfilePage
+import 'package:playlinkadmin/uicomponents/elements.dart'; 
 
 class turfscreen extends StatefulWidget {
   const turfscreen({super.key});
@@ -69,7 +69,7 @@ class _turfscreenState extends State<turfscreen> {
       appBar: AppBar(
         backgroundColor: Colors.black,
         elevation: 0,
-        automaticallyImplyLeading: false, // Ensure this is set to false
+        automaticallyImplyLeading: false,
         title: const Row(
           children: [
             SizedBox(width: 30),
@@ -93,7 +93,7 @@ class _turfscreenState extends State<turfscreen> {
               child: TextField(
                 controller: searchController,
                 style: const TextStyle(
-                    color: Colors.white), // Set the text color to white
+                  color: Colors.white),
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: Colors.grey[800],
