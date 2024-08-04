@@ -77,7 +77,7 @@ class _SlotTimingsPageState extends State<SlotTimingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Slot Timings'),
+        title: const Text('Slot Timings'),
         backgroundColor: Colors.green,
       ),
       body: SingleChildScrollView(
@@ -92,10 +92,10 @@ class _SlotTimingsPageState extends State<SlotTimingsPage> {
                   children: [
                     Expanded(
                       child: Text('${_formatTimeOfDay(range['startTime'])} - ${_formatTimeOfDay(range['endTime'])}, Price: ${range['price']}', 
-                        style: TextStyle(color: Colors.black)),
+                        style: const TextStyle(color: Colors.black)),
                     ),
                     IconButton(
-                      icon: Icon(Icons.delete, color: Colors.red),
+                      icon: const Icon(Icons.delete, color: Colors.red),
                       onPressed: () {
                         setState(() {
                           slotRanges.remove(range);
@@ -107,16 +107,16 @@ class _SlotTimingsPageState extends State<SlotTimingsPage> {
                 ),
               )).toList(),
               ElevatedButton(
-                child: Text('Add Slot Range'),
+                child: const Text('Add Slot Range'),
                 onPressed: () async {
                   await showDialog(
                     context: context,
                     builder: (BuildContext context) {
-                      TimeOfDay startTime = TimeOfDay(hour: 7, minute: 0);
-                      TimeOfDay endTime = TimeOfDay(hour: 22, minute: 0);
+                      TimeOfDay startTime = const TimeOfDay(hour: 7, minute: 0);
+                      TimeOfDay endTime = const TimeOfDay(hour: 22, minute: 0);
                       String price = '';
                       return AlertDialog(
-                        title: Text('Add Slot Range'),
+                        title: const Text('Add Slot Range'),
                         content: StatefulBuilder(
                           builder: (BuildContext context, StateSetter setState) {
                             return Column(
@@ -151,7 +151,7 @@ class _SlotTimingsPageState extends State<SlotTimingsPage> {
                                   ],
                                 ),
                                 TextField(
-                                  decoration: InputDecoration(labelText: 'Price per hour'),
+                                  decoration: const InputDecoration(labelText: 'Price per hour'),
                                   keyboardType: TextInputType.number,
                                   onChanged: (value) => price = value,
                                 ),
@@ -182,15 +182,15 @@ class _SlotTimingsPageState extends State<SlotTimingsPage> {
                   );
                 },
               ),
-              SizedBox(height: 20),
-              Text('Generated Slots:', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 20),
+              const Text('Generated Slots:', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
               ...generatedSlots.map((slot) => Padding(
                 padding: const EdgeInsets.only(bottom: 4.0),
-                child: Text('${slot['time']}, Price: ${slot['price']}', style: TextStyle(color: Colors.black)),
+                child: Text('${slot['time']}, Price: ${slot['price']}', style: const TextStyle(color: Colors.black)),
               )).toList(),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
-                child: Text('Save Slots'),
+                child: const Text('Save Slots'),
                 onPressed: () {
                   Navigator.pop(context, generatedSlots);
                 },

@@ -59,9 +59,7 @@ class _TurfPageState extends State<TurfPage> {
 
   Future<void> createTurf() async {
     final url = Uri.parse('http://10.0.2.2:3000/turf');
-    
     var request = http.MultipartRequest('POST', url);
-    
     request.fields['category'] = selectedCategory ?? '';
     request.fields['turfname'] = turfName ?? '';
     request.fields['location'] = selectedLocation ?? '';

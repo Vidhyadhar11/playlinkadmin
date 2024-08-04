@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:playlinkadmin/home/addturf.dart';
 
 class TurfDetailsPage extends StatelessWidget {
+  const TurfDetailsPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -25,7 +27,6 @@ class TurfDetailsPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Image and location
                     Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8.0),
