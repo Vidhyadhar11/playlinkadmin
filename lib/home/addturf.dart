@@ -3,6 +3,9 @@ import 'package:playlinkadmin/uicomponents/elements.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'package:playlinkadmin/home/slottiming.dart';
 
 class TurfPage extends StatefulWidget {
   const TurfPage({super.key});
@@ -17,9 +20,11 @@ class _TurfPageState extends State<TurfPage> {
   String? turfName;
   String? turfDescription;
   String? rating;
-  String? price;
   String? courts;
-  
+  File? _image;
+  final picker = ImagePicker();
+  List<Map<String, dynamic>> slots = [];
+
   final List<String> categories = [
     'Cricket', 'Badminton', 'Volleyball', 'Football', 
     'Basketball', 'Swimming', 'Tennis', 'Golf'
@@ -41,52 +46,49 @@ class _TurfPageState extends State<TurfPage> {
     'Chottanikkara'
   ];
 
-  List<Map<String, dynamic>> slotRanges = [];
-  List<Map<String, dynamic>> generatedSlots = [];
+  void navigateToSlotsPage() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => SlotTimingsPage(slots: slots)),
+    );
+    if (result != null) {
+      setState(() {
+        slots = result;
+      });
+    }
+  }
 
   Future<void> createTurf() async {
     final url = Uri.parse('http://10.0.2.2:3000/turf');
     
-    // Print collected data for debugging
-    print('Collected Turf Data:');
-    print('Category: $selectedCategory');
-    print('Turf Name: $turfName');
-    print('Location: $selectedLocation');
-    print('Description: $turfDescription');
-    print('Rating: $rating');
-    print('Price: $price');
-    print('Courts: $courts');
+    var request = http.MultipartRequest('POST', url);
+    
+    request.fields['category'] = selectedCategory ?? '';
+    request.fields['turfname'] = turfName ?? '';
+    request.fields['location'] = selectedLocation ?? '';
+    request.fields['description'] = turfDescription ?? '';
+    request.fields['rating'] = rating ?? '0';
+    request.fields['court'] = courts ?? '0';
+    request.fields['slots'] = jsonEncode(slots);  // This now contains the generated slots
 
-    final body = <String, dynamic>{
-      'image': 'turf2.jpeg',
-      'category': selectedCategory,
-      'turfname': turfName,
-      'location': selectedLocation,
-      'description': turfDescription,
-      'rating': double.tryParse(rating ?? '') ?? 0.0,
-      'slots': generatedSlots,
-      'court': int.tryParse(courts ?? '') ?? 0,
-    };
-
-    print('API Request Body:');
-    print(jsonEncode(body));
+    if (_image != null) {
+      request.files.add(await http.MultipartFile.fromPath('image', _image!.path));
+    }
 
     try {
-      final response = await http.post(
-        url,
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(body),
-      );
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
 
       print('Response Status Code: ${response.statusCode}');
       print('Response Body: ${response.body}');
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {  // Changed from 201 to 200
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Turf created successfully')),
         );
+        // You might want to do something with the created turf data here
+        var createdTurf = json.decode(response.body);
+        print('Created Turf ID: ${createdTurf['_id']}');
       } else {
         print('Failed to create turf. Status code: ${response.statusCode}');
         print('Response body: ${response.body}');
@@ -102,23 +104,53 @@ class _TurfPageState extends State<TurfPage> {
     }
   }
 
-  void generateSlots() {
-    generatedSlots.clear();
-    for (var range in slotRanges) {
-      TimeOfDay currentTime = range['startTime'];
-      while (currentTime.hour < range['endTime'].hour || 
-             (currentTime.hour == range['endTime'].hour && currentTime.minute < range['endTime'].minute)) {
-        TimeOfDay nextHour = TimeOfDay(
-          hour: (currentTime.hour + 1) % 24,
-          minute: currentTime.minute,
-        );
-        generatedSlots.add({
-          'time': '${currentTime.format(context)} - ${nextHour.format(context)}',
-          'price': range['price'],
+  Future<void> _pickImage(ImageSource source) async {
+    try {
+      final pickedFile = await picker.pickImage(source: source);
+      if (pickedFile != null) {
+        setState(() {
+          _image = File(pickedFile.path);
         });
-        currentTime = nextHour;
+        print("Image selected: ${pickedFile.path}");
+      } else {
+        print('No image selected.');
       }
+    } catch (e) {
+      print("Error picking image: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error picking image: $e')),
+      );
     }
+  }
+
+  void _showImageSourceActionSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Wrap(
+            children: <Widget>[
+              ListTile(
+                leading: Icon(Icons.photo_library),
+                title: Text('Photo Library'),
+                onTap: () {
+                  _pickImage(ImageSource.gallery);
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.photo_camera),
+                title: Text('Camera'),
+                onTap: () {
+                  _pickImage(ImageSource.camera);
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -161,6 +193,8 @@ class _TurfPageState extends State<TurfPage> {
                   maxLines: 3,
                 ),
                 const SizedBox(height: 22),
+                _buildImagePicker(),
+                const SizedBox(height: 22),
                 _buildDropdownSearch(
                   items: locations,
                   label: 'Select Location',
@@ -168,122 +202,23 @@ class _TurfPageState extends State<TurfPage> {
                   selectedItem: selectedLocation,
                 ),
                 const SizedBox(height: 22),
-                Column(
-                  children: [
-                    ...slotRanges.map((range) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Text('${range['startTime'].format(context)} - ${range['endTime'].format(context)}, Price: ${range['price']}', 
-                              style: TextStyle(color: Colors.white)),
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.delete, color: Colors.red),
-                            onPressed: () {
-                              setState(() {
-                                slotRanges.remove(range);
-                                generateSlots();
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                    )).toList(),
-                    // ElevatedButton(
-                    //   child: Text('Add Slot Range'),
-                    //   onPressed: () async {
-                    //     await showDialog(
-                    //       context: context,
-                    //       builder: (BuildContext context) {
-                    //         TimeOfDay startTime = TimeOfDay(hour: 7, minute: 0);
-                    //         TimeOfDay endTime = TimeOfDay(hour: 22, minute: 0);
-                    //         String price = '';
-                    //         return AlertDialog(
-                    //           title: Text('Add Slot Range'),
-                    //           content: Column(
-                    //             mainAxisSize: MainAxisSize.min,
-                    //             children: [
-                    //               Row(
-                    //                 children: [
-                    //                   Expanded(
-                    //                     child: TextButton(
-                    //                       child: Text('Start Time: ${startTime.format(context)}'),
-                    //                       onPressed: () async {
-                    //                         TimeOfDay? picked = await showTimePicker(
-                    //                           context: context,
-                    //                           initialTime: startTime,
-                    //                         );
-                    //                         if (picked != null) startTime = picked;
-                    //                       },
-                    //                     ),
-                    //                   ),
-                    //                   Expanded(
-                    //                     child: TextButton(
-                    //                       child: Text('End Time: ${endTime.format(context)}'),
-                    //                       onPressed: () async {
-                    //                         TimeOfDay? picked = await showTimePicker(
-                    //                           context: context,
-                    //                           initialTime: endTime,
-                    //                         );
-                    //                         if (picked != null) endTime = picked;
-                    //                       },
-                    //                     ),
-                    //                   ),
-                    //                 ],
-                    //               ),
-                    //               TextField(
-                    //                 decoration: InputDecoration(labelText: 'Price per hour'),
-                    //                 keyboardType: TextInputType.number,
-                    //                 onChanged: (value) => price = value,
-                    //               ),
-                    //             ],
-                    //           ),
-                    //           actions: [
-                    //             TextButton(
-                    //               child: Text('Add'),
-                    //               onPressed: () {
-                    //                 if (price.isNotEmpty) {
-                    //                   setState(() {
-                    //                     slotRanges.add({
-                    //                       'startTime': startTime,
-                    //                       'endTime': endTime,
-                    //                       'price': int.parse(price),
-                    //                     });
-                    //                     generateSlots();
-                    //                   });
-                    //                   Navigator.of(context).pop();
-                    //                 }
-                    //               },
-                    //             ),
-                    //           ],
-                    //         );
-                    //       },
-                    //     );
-                    //   },
-                    // ),
-                    // SizedBox(height: 20),
-                    // Text('Generated Slots:', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                    // ...generatedSlots.map((slot) => Padding(
-                    //   padding: const EdgeInsets.only(bottom: 4.0),
-                    //   child: Text('${slot['time']}, Price: ${slot['price']}', style: TextStyle(color: Colors.white)),
-                    // )).toList(),
-                  ],
-                ),
-                // const SizedBox(height: 22),
                 _buildTextFormField(
                   label: 'Rating',
                   onChanged: (value) => setState(() => rating = value),
                 ),
                 const SizedBox(height: 22),
                 _buildTextFormField(
-                  label: 'Price',
-                  onChanged: (value) => setState(() => price = value),
+                  label: 'Courts',
+                  onChanged: (value) => setState(() => courts = value),
                 ),
                 const SizedBox(height: 22),
-                _buildTextFormField(
-                  label: 'courts',
-                  onChanged: (value) => setState(() => courts = value),
+                ElevatedButton(
+                  onPressed: navigateToSlotsPage,
+                  child: Text('Add Slot Timings'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    foregroundColor: Colors.white,
+                  ),
                 ),
                 const SizedBox(height: 22),
                 Center(
@@ -307,6 +242,59 @@ class _TurfPageState extends State<TurfPage> {
           currentIndex: 2,
         ),
       ),
+    );
+  }
+
+  Widget _buildImagePicker() {
+    return Container(
+      height: 200,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.green),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: _image == null
+          ? Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.add_a_photo, color: Colors.green, size: 50),
+                SizedBox(height: 10),
+                Text(
+                  'Tap to select turf image',
+                  style: TextStyle(color: Colors.white),
+                ),
+                SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: () => _showImageSourceActionSheet(context),
+                  child: Text('Select Image'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    foregroundColor: Colors.white,
+                  ),
+                ),
+              ],
+            )
+          : Stack(
+              fit: StackFit.expand,
+              children: [
+                Image.file(
+                  _image!,
+                  fit: BoxFit.cover,
+                ),
+                Positioned(
+                  top: 10,
+                  right: 10,
+                  child: IconButton(
+                    icon: Icon(Icons.close, color: Colors.white),
+                    onPressed: () {
+                      setState(() {
+                        _image = null;
+                      });
+                    },
+                  ),
+                ),
+              ],
+            ),
     );
   }
 

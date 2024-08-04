@@ -1,78 +1,199 @@
 import 'package:flutter/material.dart';
 
-class SlotTimingPage extends StatelessWidget {
+class SlotTimingsPage extends StatefulWidget {
+  final List<Map<String, dynamic>> slots;
+
+  SlotTimingsPage({required this.slots});
+
+  @override
+  _SlotTimingsPageState createState() => _SlotTimingsPageState();
+}
+
+class _SlotTimingsPageState extends State<SlotTimingsPage> {
+  late List<Map<String, dynamic>> slotRanges;
+  List<Map<String, dynamic>> generatedSlots = [];
+
+  @override
+  void initState() {
+    super.initState();
+    slotRanges = widget.slots.map((slot) {
+      List<String> times = slot['time'].split(' - ');
+      return {
+        'startTime': _parseTimeString(times[0]),
+        'endTime': _parseTimeString(times[1]),
+        'price': slot['price'],
+      };
+    }).toList();
+    generateSlots();
+  }
+
+  TimeOfDay _parseTimeString(String timeString) {
+    List<String> parts = timeString.split(':');
+    int hour = int.parse(parts[0]);
+    int minute = int.parse(parts[1].split(' ')[0]);
+    if (timeString.toLowerCase().contains('pm') && hour != 12) {
+      hour += 12;
+    }
+    return TimeOfDay(hour: hour, minute: minute);
+  }
+
+  void generateSlots() {
+    generatedSlots.clear();
+    for (var range in slotRanges) {
+      TimeOfDay startTime = range['startTime'];
+      TimeOfDay endTime = range['endTime'];
+      int price = range['price'];
+
+      while (startTime.hour < endTime.hour || 
+             (startTime.hour == endTime.hour && startTime.minute < endTime.minute)) {
+        TimeOfDay slotEndTime = TimeOfDay(
+          hour: (startTime.hour + 1) % 24,
+          minute: startTime.minute,
+        );
+        
+        if (slotEndTime.hour > endTime.hour || 
+            (slotEndTime.hour == endTime.hour && slotEndTime.minute > endTime.minute)) {
+          slotEndTime = endTime;
+        }
+
+        generatedSlots.add({
+          'time': '${_formatTimeOfDay(startTime)} - ${_formatTimeOfDay(slotEndTime)}',
+          'price': price,
+        });
+
+        startTime = slotEndTime;
+      }
+    }
+  }
+
+  String _formatTimeOfDay(TimeOfDay time) {
+    final hour = time.hourOfPeriod;
+    final minute = time.minute.toString().padLeft(2, '0');
+    final period = time.period == DayPeriod.am ? 'AM' : 'PM';
+    return '$hour:$minute $period';
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.black,
-        appBar: AppBar(
-          backgroundColor: Colors.black,
-          elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          title:
-              const Text('Slot Timings', style: TextStyle(color: Colors.white)),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.edit, color: Colors.white),
-              onPressed: () {
-                // Edit logic here
-              },
-            ),
-          ],
-        ),
-        body: Padding(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Slot Timings'),
+        backgroundColor: Colors.green,
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: ListView.builder(
-                  itemCount: 8, // Number of slots
-                  itemBuilder: (context, index) {
-                    return const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            '9 am - 10 am',
-                            style: const TextStyle(
-                                color: Colors.green, fontSize: 16),
-                          ),
-                          Text(
-                            'INR 250',
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 16),
+              ...slotRanges.map((range) => Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text('${_formatTimeOfDay(range['startTime'])} - ${_formatTimeOfDay(range['endTime'])}, Price: ${range['price']}', 
+                        style: TextStyle(color: Colors.black)),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.delete, color: Colors.red),
+                      onPressed: () {
+                        setState(() {
+                          slotRanges.remove(range);
+                          generateSlots();
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              )).toList(),
+              ElevatedButton(
+                child: Text('Add Slot Range'),
+                onPressed: () async {
+                  await showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      TimeOfDay startTime = TimeOfDay(hour: 7, minute: 0);
+                      TimeOfDay endTime = TimeOfDay(hour: 22, minute: 0);
+                      String price = '';
+                      return AlertDialog(
+                        title: Text('Add Slot Range'),
+                        content: StatefulBuilder(
+                          builder: (BuildContext context, StateSetter setState) {
+                            return Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: TextButton(
+                                        child: Text('Start Time: ${startTime.format(context)}'),
+                                        onPressed: () async {
+                                          TimeOfDay? picked = await showTimePicker(
+                                            context: context,
+                                            initialTime: startTime,
+                                          );
+                                          if (picked != null) setState(() => startTime = picked);
+                                        },
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: TextButton(
+                                        child: Text('End Time: ${endTime.format(context)}'),
+                                        onPressed: () async {
+                                          TimeOfDay? picked = await showTimePicker(
+                                            context: context,
+                                            initialTime: endTime,
+                                          );
+                                          if (picked != null) setState(() => endTime = picked);
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                TextField(
+                                  decoration: InputDecoration(labelText: 'Price per hour'),
+                                  keyboardType: TextInputType.number,
+                                  onChanged: (value) => price = value,
+                                ),
+                              ],
+                            );
+                          }
+                        ),
+                        actions: [
+                          TextButton(
+                            child: Text('Add'),
+                            onPressed: () {
+                              if (price.isNotEmpty) {
+                                setState(() {
+                                  slotRanges.add({
+                                    'startTime': startTime,
+                                    'endTime': endTime,
+                                    'price': int.parse(price),
+                                  });
+                                  generateSlots();
+                                });
+                                Navigator.of(context).pop();
+                              }
+                            },
                           ),
                         ],
-                      ),
-                    );
-                  },
-                ),
+                      );
+                    },
+                  );
+                },
               ),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                  ),
-                  child: const Text(
-                    'Done',
-                    style: TextStyle(color: Colors.green, fontSize: 16),
-                  ),
-                ),
+              SizedBox(height: 20),
+              Text('Generated Slots:', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+              ...generatedSlots.map((slot) => Padding(
+                padding: const EdgeInsets.only(bottom: 4.0),
+                child: Text('${slot['time']}, Price: ${slot['price']}', style: TextStyle(color: Colors.black)),
+              )).toList(),
+              SizedBox(height: 20),
+              ElevatedButton(
+                child: Text('Save Slots'),
+                onPressed: () {
+                  Navigator.pop(context, generatedSlots);
+                },
               ),
             ],
           ),

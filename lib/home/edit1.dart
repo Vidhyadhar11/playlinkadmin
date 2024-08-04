@@ -168,10 +168,10 @@ class TurfDetailsPage extends StatelessWidget {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => SlotTimingPage()),
-                        );
+                        // Navigator.push(
+                          // context,
+                          // MaterialPageRoute(builder: (context) => SlotTimingsPage()),
+                        // );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white, // Dark background color
