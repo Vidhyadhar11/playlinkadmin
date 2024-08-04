@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:playlinkadmin/onboarding/ca.dart';
-import 'package:playlinkadmin/onboarding/phn.dart';
 import 'package:playlinkadmin/models/mycontroller.dart';
 import 'package:playlinkadmin/onboarding/otp.dart';
 import 'package:playlinkadmin/models/api_config.dart'; // Create this file for API URLs

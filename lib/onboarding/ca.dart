@@ -35,6 +35,8 @@ class CreateAccountController extends GetxController {
 }
 
 class CreateAccountPage extends StatefulWidget {
+  const CreateAccountPage({super.key});
+
   @override
   _CreateAccountPageState createState() => _CreateAccountPageState();
 }
@@ -55,11 +57,11 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       backgroundColor: Colors.black,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Center(
+              const Center(
                 child: Text(
                   'Create Account',
                   style: TextStyle(
@@ -69,7 +71,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                   ),
                 ),
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
               Row(
                 children: [
                   Expanded(
@@ -78,7 +80,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                       label: 'First Name',
                     ),
                   ),
-                  SizedBox(width: 16),
+                  const SizedBox(width: 16),
                   Expanded(
                     child: CustomTextField(
                       controller: _lastNameController,
@@ -87,27 +89,27 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                   ),
                 ],
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               CustomTextField(
                 controller: _accountHolderNameController,
                 label: 'Account holder name',
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               CustomTextField(
                 controller: _ifscCodeController,
                 label: 'IFSC Code',
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               CustomTextField(
                 controller: _accountNumberController,
                 label: 'Account Number',
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               CustomTextField(
                 controller: _mobileNumberController,
                 label: 'Mobile Number',
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Row(
                 children: [
                   Checkbox(
@@ -119,7 +121,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                     },
                     fillColor: MaterialStateProperty.resolveWith((states) => Colors.transparent),
                   ),
-                  Expanded(
+                  const Expanded(
                     child: Text(
                       'I understood the terms & policy.',
                       style: TextStyle(color: Colors.white),
@@ -127,12 +129,12 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                   ),
                 ],
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Align(
                 alignment: Alignment.bottomRight,
                 child: ElevatedButton(
                   onPressed: _handleSignup,
-                  child:Row(
+                  child:const Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text('Signup', style: TextStyle(color: Colors.green)),
@@ -232,16 +234,16 @@ class CustomTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
-      style: TextStyle(color: Colors.white),
+      style: const TextStyle(color: Colors.white),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: TextStyle(color: Colors.grey),
+        labelStyle: const TextStyle(color: Colors.grey),
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Colors.grey.shade800),
           borderRadius: BorderRadius.circular(8),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey),
+          borderSide: const BorderSide(color: Colors.grey),
           borderRadius: BorderRadius.circular(8),
         ),
         filled: false,

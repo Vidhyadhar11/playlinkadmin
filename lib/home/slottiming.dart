@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class SlotTimingsPage extends StatefulWidget {
   final List<Map<String, dynamic>> slots;
 
-  SlotTimingsPage({required this.slots});
+  const SlotTimingsPage({super.key, required this.slots});
 
   @override
   _SlotTimingsPageState createState() => _SlotTimingsPageState();
@@ -161,7 +161,7 @@ class _SlotTimingsPageState extends State<SlotTimingsPage> {
                         ),
                         actions: [
                           TextButton(
-                            child: Text('Add'),
+                            child: const Text('Add'),
                             onPressed: () {
                               if (price.isNotEmpty) {
                                 setState(() {

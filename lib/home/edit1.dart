@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:playlinkadmin/home/addturf.dart';
-import 'package:playlinkadmin/home/slottiming.dart';
 
 class TurfDetailsPage extends StatelessWidget {
   @override
@@ -119,13 +118,13 @@ class TurfDetailsPage extends StatelessWidget {
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => TurfPage()),
+                                MaterialPageRoute(builder: (context) => const TurfPage()),
                               );
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white, // Dark background color
+                              backgroundColor: Colors.white, 
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30), // Rounded corners
+                                borderRadius: BorderRadius.circular(30), 
                               ),
                               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                             ),

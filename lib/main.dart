@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:playlinkadmin/onboarding/splash.dart';
-import 'package:playlinkadmin/onboarding/onboarding.dart';
 import 'package:playlinkadmin/onboarding/phn.dart';
 import 'package:playlinkadmin/home/home.dart';
 import 'package:playlinkadmin/home/edit1.dart';
