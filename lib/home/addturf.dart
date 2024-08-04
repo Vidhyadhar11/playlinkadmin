@@ -274,10 +274,7 @@ class _TurfPageState extends State<TurfPage> {
           : Stack(
               fit: StackFit.expand,
               children: [
-                Image.file(
-                  _image!,
-                  fit: BoxFit.cover,
-                ),
+                Image.file(_image!,fit: BoxFit.cover),
                 Positioned(
                   top: 10,
                   right: 10,

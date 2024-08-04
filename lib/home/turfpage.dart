@@ -3,6 +3,73 @@ import 'package:playlinkadmin/home/edit1.dart';
 import 'package:playlinkadmin/home/test.dart';
 import 'package:playlinkadmin/uicomponents/cards.dart';
 import 'package:playlinkadmin/uicomponents/elements.dart';
+import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:playlinkadmin/models/turfpage_api.dart';
+
+class SportsFieldController extends GetxController {
+  var sportsFields = <SportsFieldApi>[].obs;
+  var isLoading = true.obs;
+
+  @override
+  void onInit() {
+    fetchSportsFields();
+    super.onInit();
+  }
+
+  void fetchSportsFields() async {
+    try {
+      isLoading(true);
+      final response = await http.get(Uri.parse('http://localhost:3000/api/sports-fields'));
+      if (response.statusCode == 200) {
+        var jsonData = json.decode(response.body) as List;
+        sportsFields.value = jsonData.map((field) => SportsFieldApi.fromJson(field)).toList();
+      } else {
+        Get.snackbar('Error', 'Failed to fetch sports fields');
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to fetch sports fields');
+    } finally {
+      isLoading(false);
+    }
+  }
+}
+
+class SportsFieldApi {
+  final int id;
+  final String turfName;
+  final String location;
+  final double rating;
+  final int courts;
+  final String imageUrl;
+  final int discounts;
+  final String category;
+
+  SportsFieldApi({
+    required this.id,
+    required this.turfName,
+    required this.location,
+    required this.rating,
+    required this.courts,
+    required this.imageUrl,
+    required this.discounts,
+    required this.category,
+  });
+
+  factory SportsFieldApi.fromJson(Map<String, dynamic> json) {
+    return SportsFieldApi(
+      id: json['id'],
+      turfName: json['turfName'],
+      location: json['location'],
+      rating: json['rating'],
+      courts: json['courts'],
+      imageUrl: json['imageUrl'],
+      discounts: json['discounts'],
+      category: json['category'],
+    );
+  }
+}
 
 class turfscreen extends StatefulWidget {
   const turfscreen({super.key});
@@ -12,51 +79,17 @@ class turfscreen extends StatefulWidget {
 }
 
 class _turfscreenState extends State<turfscreen> {
-  final List<SportsField> sportsFields = [
-    SportsField(
-      name: 'KPHB',
-      location: 'Hyderabad',
-      rating: 4.4,
-      price: 120,
-      imageUrl:
-          'https://via.placeholder.com/150', // Replace with your image URL
-      discount: '15% Off',
-      sportType: 'Football', // Pass the sportType
-    ),
-    SportsField(
-      name: 'Gachibowli',
-      location: 'Hyderabad',
-      rating: 4.4,
-      price: 120,
-      imageUrl:
-          'https://via.placeholder.com/150', // Replace with your image URL
-      discount: '10% Off',
-      sportType: 'Cricket', // Pass the sportType
-    ),
-    SportsField(
-      name: 'suchitra',
-      location: 'chepak',
-      rating: 4.4,
-      price: 120,
-      imageUrl:
-          'https://via.placeholder.com/150', // Replace with your image URL
-      discount: '10% Off',
-      sportType: 'Tennis', // Pass the sportType
-    ),
-    // Add more SportsField objects if needed
-  ];
-
-  List<SportsField> filteredSportsFields = [];
-  bool isPressed =
-      false; // Define isPressed variable at the beginning of _HomePageState class
-  int _currentIndex = 0;
+  final SportsFieldController controller = Get.put(SportsFieldController());
+  final UserController userController = Get.put(UserController());
   TextEditingController searchController = TextEditingController();
+  List<SportsFieldApi> filteredSportsFields = [];
 
   @override
   void initState() {
     super.initState();
-    filteredSportsFields = sportsFields;
+    filteredSportsFields = controller.sportsFields;
     searchController.addListener(_filterSportsFields);
+    userController.fetchUserDetails();
   }
 
   @override
@@ -68,10 +101,10 @@ class _turfscreenState extends State<turfscreen> {
   void _filterSportsFields() {
     String query = searchController.text.toLowerCase();
     setState(() {
-      filteredSportsFields = sportsFields.where((field) {
-        return field.name.toLowerCase().contains(query) ||
+      filteredSportsFields = controller.sportsFields.where((field) {
+        return field.turfName.toLowerCase().contains(query) ||
             field.location.toLowerCase().contains(query) ||
-            field.sportType.toLowerCase().contains(query);
+            field.category.toLowerCase().contains(query);
       }).toList();
     });
   }
@@ -340,21 +373,41 @@ class _turfscreenState extends State<turfscreen> {
                 ],
               ),
             ),
-            ...filteredSportsFields.map((field) => Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0, vertical: 8.0),
-                  child: SportsFieldCard(
-                    sportsField: field,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => TurfDetailsPage(),
-                        ),
+            Obx(() {
+              if (controller.isLoading.value) {
+                return const Center(child: CircularProgressIndicator());
+              } else {
+                return Expanded(
+                  child: ListView.builder(
+                    itemCount: filteredSportsFields.length,
+                    itemBuilder: (context, index) {
+                      final field = filteredSportsFields[index];
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => TurfDetailsPage(),
+                            ),
+                          );
+                        },
+                        // child: SportsFieldCard(
+                        //   sportsFieldApi: field,
+                        //   onTap: () {
+                        //     Navigator.push(
+                        //       context,
+                        //       MaterialPageRoute(
+                        //         builder: (context) => TurfDetailsPage(),
+                        //       ),
+                        //     );
+                        //   },
+                        // ),
                       );
                     },
                   ),
-                )),
+                );
+              }
+            }),
             const SizedBox(height: 200), // Adding space for the floating navbar
           ],
         ),
@@ -363,5 +416,22 @@ class _turfscreenState extends State<turfscreen> {
         currentIndex: 1,
       ),
     );
+  }
+}
+
+class UserController extends GetxController {
+  var userDetails = {}.obs;
+
+  @override
+  void onInit() {
+    fetchUserDetails();
+    super.onInit();
+  }
+
+  void fetchUserDetails() {
+    userDetails.value = {
+      'name': 'John Doe',
+      'email': 'john.doe@example.com',
+    };
   }
 }
