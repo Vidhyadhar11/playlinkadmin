@@ -76,9 +76,17 @@ class _SlotTimingsPageState extends State<SlotTimingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[900],
       appBar: AppBar(
-        title: const Text('Slot Timings'),
-        backgroundColor: Colors.green,
+        automaticallyImplyLeading: false, // Remove the default back icon
+        title: const Text('Slot Timings', style: TextStyle(color: Colors.green)),
+        backgroundColor: Colors.grey[900],
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -92,7 +100,7 @@ class _SlotTimingsPageState extends State<SlotTimingsPage> {
                   children: [
                     Expanded(
                       child: Text('${_formatTimeOfDay(range['startTime'])} - ${_formatTimeOfDay(range['endTime'])}, Price: ${range['price']}', 
-                        style: const TextStyle(color: Colors.black)),
+                        style: const TextStyle(color: Colors.white)),
                     ),
                     IconButton(
                       icon: const Icon(Icons.delete, color: Colors.red),
@@ -116,7 +124,8 @@ class _SlotTimingsPageState extends State<SlotTimingsPage> {
                       TimeOfDay endTime = const TimeOfDay(hour: 22, minute: 0);
                       String price = '';
                       return AlertDialog(
-                        title: const Text('Add Slot Range'),
+                        backgroundColor: Colors.grey[800],
+                        title: const Text('Add Slot Range', style: TextStyle(color: Colors.green)),
                         content: StatefulBuilder(
                           builder: (BuildContext context, StateSetter setState) {
                             return Column(
@@ -126,7 +135,7 @@ class _SlotTimingsPageState extends State<SlotTimingsPage> {
                                   children: [
                                     Expanded(
                                       child: TextButton(
-                                        child: Text('Start Time: ${startTime.format(context)}'),
+                                        child: Text('Start Time: ${startTime.format(context)}', style: const TextStyle(color: Colors.white)),
                                         onPressed: () async {
                                           TimeOfDay? picked = await showTimePicker(
                                             context: context,
@@ -138,7 +147,7 @@ class _SlotTimingsPageState extends State<SlotTimingsPage> {
                                     ),
                                     Expanded(
                                       child: TextButton(
-                                        child: Text('End Time: ${endTime.format(context)}'),
+                                        child: Text('End Time: ${endTime.format(context)}', style: const TextStyle(color: Colors.white)),
                                         onPressed: () async {
                                           TimeOfDay? picked = await showTimePicker(
                                             context: context,
@@ -151,9 +160,13 @@ class _SlotTimingsPageState extends State<SlotTimingsPage> {
                                   ],
                                 ),
                                 TextField(
-                                  decoration: const InputDecoration(labelText: 'Price per hour'),
+                                  decoration: const InputDecoration(
+                                    labelText: 'Price per hour',
+                                    labelStyle: TextStyle(color: Colors.white),
+                                  ),
                                   keyboardType: TextInputType.number,
                                   onChanged: (value) => price = value,
+                                  style: const TextStyle(color: Colors.white),
                                 ),
                               ],
                             );
@@ -161,7 +174,7 @@ class _SlotTimingsPageState extends State<SlotTimingsPage> {
                         ),
                         actions: [
                           TextButton(
-                            child: const Text('Add'),
+                            child: const Text('Add', style: TextStyle(color: Colors.green)),
                             onPressed: () {
                               if (price.isNotEmpty) {
                                 setState(() {
@@ -181,12 +194,16 @@ class _SlotTimingsPageState extends State<SlotTimingsPage> {
                     },
                   );
                 },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  foregroundColor: Colors.white,
+                ),
               ),
               const SizedBox(height: 20),
-              const Text('Generated Slots:', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+              const Text('Generated Slots:', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
               ...generatedSlots.map((slot) => Padding(
                 padding: const EdgeInsets.only(bottom: 4.0),
-                child: Text('${slot['time']}, Price: ${slot['price']}', style: const TextStyle(color: Colors.black)),
+                child: Text('${slot['time']}, Price: ${slot['price']}', style: const TextStyle(color: Colors.white)),
               )).toList(),
               const SizedBox(height: 20),
               ElevatedButton(
@@ -194,6 +211,10 @@ class _SlotTimingsPageState extends State<SlotTimingsPage> {
                 onPressed: () {
                   Navigator.pop(context, generatedSlots);
                 },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  foregroundColor: Colors.white,
+                ),
               ),
             ],
           ),

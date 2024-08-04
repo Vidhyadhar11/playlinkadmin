@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'package:playlinkadmin/home/slottiming.dart';
+import 'package:playlinkadmin/slots/slottiming.dart';
 
 class TurfPage extends StatefulWidget {
   const TurfPage({super.key});
