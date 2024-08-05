@@ -80,7 +80,6 @@ class turfscreen extends StatefulWidget {
 
 class _turfscreenState extends State<turfscreen> {
   final SportsFieldController controller = Get.put(SportsFieldController());
-  final UserController userController = Get.put(UserController());
   TextEditingController searchController = TextEditingController();
   List<SportsFieldApi> filteredSportsFields = [];
 
@@ -89,7 +88,6 @@ class _turfscreenState extends State<turfscreen> {
     super.initState();
     filteredSportsFields = controller.sportsFields;
     searchController.addListener(_filterSportsFields);
-    userController.fetchUserDetails();
   }
 
   @override
@@ -148,169 +146,7 @@ class _turfscreenState extends State<turfscreen> {
             ),
           ],
         ),
-      ),
-      drawer: Drawer(
-        backgroundColor: Colors.grey[800],
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              UserAccountsDrawerHeader(
-                accountName: const Text('Salman Khan',
-                    style: TextStyle(color: Colors.white)),
-                accountEmail: const Text('salmankhan@gmail.com',
-                    style: TextStyle(color: Colors.white)),
-                currentAccountPicture: CircleAvatar(
-                  backgroundColor: Colors.grey[800],
-                  child: const Icon(Icons.person, color: Colors.white),
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.grey[800],
-                ),
-              ),
-              ListTile(
-                title: const Center(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Icon(Icons.person, color: Colors.white),
-                      SizedBox(width: 8),
-                      Text('Your Profile',
-                          style: TextStyle(color: Colors.white)),
-                    ],
-                  ),
-                ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const TestPage()),
-                  );
-                },
-              ),
-              ListTile(
-                title: const Center(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Icon(Icons.book, color: Colors.white),
-                      SizedBox(width: 8),
-                      Text('Bookings', style: TextStyle(color: Colors.white)),
-                    ],
-                  ),
-                ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const TestPage()),
-                  );
-                },
-              ),
-              ListTile(
-                title: const Center(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Icon(Icons.star, color: Colors.white),
-                      SizedBox(width: 8),
-                      Text('Rewards', style: TextStyle(color: Colors.white)),
-                    ],
-                  ),
-                ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const TestPage()),
-                  );
-                },
-              ),
-              ListTile(
-                title: const Center(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Icon(Icons.favorite, color: Colors.white),
-                      SizedBox(width: 8),
-                      Text('Your Wishlist',
-                          style: TextStyle(color: Colors.white)),
-                    ],
-                  ),
-                ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const TestPage()),
-                  );
-                },
-              ),
-              ListTile(
-                title: const Center(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Icon(Icons.help, color: Colors.white),
-                      SizedBox(width: 8),
-                      Text('Help desk', style: TextStyle(color: Colors.white)),
-                    ],
-                  ),
-                ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const TestPage()),
-                  );
-                },
-              ),
-              ListTile(
-                title: const Center(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Icon(Icons.settings, color: Colors.white),
-                      SizedBox(width: 8),
-                      Text('Settings', style: TextStyle(color: Colors.white)),
-                    ],
-                  ),
-                ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const TestPage()),
-                  );
-                },
-              ),
-              const Spacer(),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: ListTile(
-                  title: const Center(
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(Icons.logout, color: Colors.green),
-                        SizedBox(width: 8),
-                        Text('Logout', style: TextStyle(color: Colors.green)),
-                      ],
-                    ),
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const TestPage()),
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+      ),      
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -334,45 +170,6 @@ class _turfscreenState extends State<turfscreen> {
                 ),
               ),
             ),
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: Row(
-                children: [
-                  const Expanded(
-                    child: Text(
-                      'Interested Sport in',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16.0,
-                      ),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                const TestPage()), // Replace with your target screen
-                      );
-                    },
-                    child: const Row(
-                      children: [
-                        Icon(Icons.location_on, color: Colors.white),
-                        Text(
-                          'Location',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16.0,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
             Obx(() {
               if (controller.isLoading.value) {
                 return const Center(child: CircularProgressIndicator());
@@ -381,13 +178,12 @@ class _turfscreenState extends State<turfscreen> {
                   child: ListView.builder(
                     itemCount: filteredSportsFields.length,
                     itemBuilder: (context, index) {
-                      final field = filteredSportsFields[index];
                       return GestureDetector(
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => TurfDetailsPage(),
+                              builder: (context) => const TurfDetailsPage(),
                             ),
                           );
                         },
@@ -416,22 +212,5 @@ class _turfscreenState extends State<turfscreen> {
         currentIndex: 1,
       ),
     );
-  }
-}
-
-class UserController extends GetxController {
-  var userDetails = {}.obs;
-
-  @override
-  void onInit() {
-    fetchUserDetails();
-    super.onInit();
-  }
-
-  void fetchUserDetails() {
-    userDetails.value = {
-      'name': 'John Doe',
-      'email': 'john.doe@example.com',
-    };
   }
 }
