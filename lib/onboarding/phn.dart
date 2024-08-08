@@ -111,11 +111,12 @@ class _EnterPhoneNumberScreenState extends State<EnterPhoneNumberScreen> {
   void _handleProceed() async {
     if (_phoneNumberValid.value) {
       String phoneNumber = myController.phoneNumberController.value.text;
-      print('Phone number: $phoneNumber');
+      Mycontroller.setPhoneNumber('+91$phoneNumber');
+      print('Phone number stored: ${Mycontroller.getPhoneNumber()}');
 
       try {
         final response = await sendPhoneNumber('+91$phoneNumber');
-        if (response != null) {
+        if (response != null && response.containsKey('orderId')) {
           String orderId = response['orderId']!;
           Get.to(() => EnterOTPScreen(
             orderId: orderId,
@@ -123,6 +124,7 @@ class _EnterPhoneNumberScreenState extends State<EnterPhoneNumberScreen> {
           ));
           print('Phone number sent successfully');
         } else {
+          print('Response is null or does not contain orderId');
           Get.snackbar('Error', 'Failed to send phone number. Please try again.',
               snackPosition: SnackPosition.BOTTOM);
         }
@@ -139,6 +141,9 @@ class _EnterPhoneNumberScreenState extends State<EnterPhoneNumberScreen> {
 
   Future<Map<String, String>?> sendPhoneNumber(String phoneNumber) async {
     try {
+      print('Sending request to: ${ApiConfig.sendOtpUrl}');
+      print('Request body: ${jsonEncode({'mobileno': phoneNumber})}');
+
       final response = await http.post(
         Uri.parse(ApiConfig.sendOtpUrl),
         headers: {
@@ -160,6 +165,7 @@ class _EnterPhoneNumberScreenState extends State<EnterPhoneNumberScreen> {
         }
       } else {
         print('Failed to send phone number. Status code: ${response.statusCode}');
+        print('Response body: ${response.body}');
         return null;
       }
     } catch (e) {

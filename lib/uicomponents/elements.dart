@@ -77,24 +77,21 @@ class CustomNavBar extends StatelessWidget {
   }
 
   Widget _buildNavItem(IconData icon, int index, BuildContext context) {
-    return IconButton(
-      icon: Icon(icon, color: currentIndex == index ? Colors.green : Colors.grey),
-      onPressed: () {
+    return GestureDetector(
+      onTap: () {
         switch (index) {
           case 0:
             Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
             break;
           case 1:
-            Navigator.push(context, MaterialPageRoute(builder: (context) => turfscreen()));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const Turfspage()));
             break;
           case 2:
-            Navigator.push(context, MaterialPageRoute(builder: (context) =>  TurfPage()));
-            break;
-          case 3:
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const TestPage()));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const TurfPage()));
             break;
         }
       },
+      child: Icon(icon, color: currentIndex == index ? Colors.green : Colors.grey),
     );
   }
 }

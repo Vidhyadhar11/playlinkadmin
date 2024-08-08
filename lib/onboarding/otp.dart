@@ -115,12 +115,11 @@ class _EnterOTPScreenState extends State<EnterOTPScreen> {
 
   void _handleVerifyOTP() async {
     String enteredOTP = myController.otpControllers.map((controller) => controller.text).join();
-    print('Verifying OTP for phone number: ${widget.phoneNumber} with order ID: ${widget.orderId} and OTP: $enteredOTP');
+    print('Verifying OTP for phone number: ${Mycontroller.getPhoneNumber()} with order ID: ${widget.orderId} and OTP: $enteredOTP');
 
     try {
-      final response = await verifyOTP(widget.phoneNumber, enteredOTP, widget.orderId);
+      final response = await verifyOTP(Mycontroller.getPhoneNumber(), enteredOTP, widget.orderId);
       if (response != null && response['message'] == 'Admin User verified successfully') {
-        print('OTP verified successfully. Navigating to HomePage...');
         await Get.offAll(() => HomePage());
       } else {
         print('OTP verification failed. Clearing input fields...');

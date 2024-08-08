@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:playlinkadmin/home/turfpage.dart';
-
 // Define the SportsField class to handle both types of cards
 class SportsField {
   final String name;
@@ -33,7 +31,7 @@ class SportsFieldCard extends StatefulWidget {
   final SportsField sportsField;
   final VoidCallback onTap;
 
-  const SportsFieldCard({Key? key, required this.sportsField, required this.onTap, required SportsFieldApi sportsFieldApi}) : super(key: key);
+  const SportsFieldCard({Key? key, required this.sportsField, required this.onTap}) : super(key: key);
 
   @override
   _SportsFieldCardState createState() => _SportsFieldCardState();

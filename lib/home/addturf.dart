@@ -6,6 +6,8 @@ import 'dart:convert';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:playlinkadmin/slots/slottiming.dart';
+import 'package:playlinkadmin/models/mycontroller.dart';
+import 'package:get/get.dart';
 
 class TurfPage extends StatefulWidget {
   const TurfPage({super.key});
@@ -22,6 +24,8 @@ class _TurfPageState extends State<TurfPage> {
   String? courts;
   File? _image;
   final picker = ImagePicker();
+  final phoneNumber = Mycontroller.getPhoneNumber();
+  
   List<Map<String, dynamic>> slots = [];
 
   final List<String> categories = [
@@ -57,16 +61,20 @@ class _TurfPageState extends State<TurfPage> {
     }
   }
 
-  Future<void> createTurf() async {
-    final url = Uri.parse('http://10.0.2.2:3000/turf');
+    Future<void> createTurf() async {
+    final url = Uri.parse('http://13.233.98.192:3000/turf');
     var request = http.MultipartRequest('POST', url);
+    final formattedPhoneNumber = phoneNumber.startsWith('+91') ? phoneNumber.substring(3) : phoneNumber;
+    request.fields['ownerMobileNo'] = formattedPhoneNumber;
     request.fields['category'] = selectedCategory ?? '';
     request.fields['turfname'] = turfName ?? '';
     request.fields['location'] = selectedLocation ?? '';
     request.fields['description'] = turfDescription ?? '';
     request.fields['rating'] = rating ?? '0';
     request.fields['court'] = courts ?? '0';
-    request.fields['slots'] = jsonEncode(slots);  // This now contains the generated slots
+    request.fields['slots'] = jsonEncode(slots);
+
+    print('Request fields: ${request.fields}');
 
     if (_image != null) {
       request.files.add(await http.MultipartFile.fromPath('image', _image!.path));
@@ -79,11 +87,10 @@ class _TurfPageState extends State<TurfPage> {
       print('Response Status Code: ${response.statusCode}');
       print('Response Body: ${response.body}');
 
-      if (response.statusCode == 200) {  // Changed from 201 to 200
+      if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Turf created successfully')),
         );
-        // You might want to do something with the created turf data here
         var createdTurf = json.decode(response.body);
         print('Created Turf ID: ${createdTurf['_id']}');
       } else {
