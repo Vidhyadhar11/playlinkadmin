@@ -1,6 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-// import 'package:playlinkadmin/models/mycontroller.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:playlinkadmin/models/mycontroller.dart';
 import 'package:playlinkadmin/uicomponents/elements.dart';
 
 class HomePage extends StatefulWidget {
@@ -12,87 +14,94 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String selectedTab = 'M';
+  List<BarChartGroupData> barGraphData = [];
+  double maxY = 15; // Default max Y value
 
-  List<BarChartGroupData> getGraphData() {
-    switch (selectedTab) {
-      case 'D':
-        return [
-          BarChartGroupData(
-              x: 0, barRods: [BarChartRodData(toY: 1, color: Colors.green)]),
-          BarChartGroupData(
-              x: 1, barRods: [BarChartRodData(toY: 2, color: Colors.green)]),
-          BarChartGroupData(
-              x: 2, barRods: [BarChartRodData(toY: 1.5, color: Colors.green)]),
-          BarChartGroupData(
-              x: 3, barRods: [BarChartRodData(toY: 1.5, color: Colors.green)]),
-          BarChartGroupData(
-              x: 4, barRods: [BarChartRodData(toY: 1.5, color: Colors.green)]),
-          BarChartGroupData(
-              x: 5, barRods: [BarChartRodData(toY: 1.5, color: Colors.green)]),
-          BarChartGroupData(
-              x: 6, barRods: [BarChartRodData(toY: 1.5, color: Colors.green)]),
-        ];
-      case 'W':
-        return [
-          BarChartGroupData(
-              x: 0, barRods: [BarChartRodData(toY: 3, color: Colors.green)]),
-          BarChartGroupData(
-              x: 1, barRods: [BarChartRodData(toY: 2.5, color: Colors.green)]),
-          BarChartGroupData(
-              x: 2, barRods: [BarChartRodData(toY: 3.5, color: Colors.green)]),
-          BarChartGroupData(
-              x: 3, barRods: [BarChartRodData(toY: 4, color: Colors.green)]),
-          BarChartGroupData(
-              x: 4, barRods: [BarChartRodData(toY: 3.8, color: Colors.green)]),
-        ];
-      case 'M':
-        return [
-          BarChartGroupData(
-              x: 0, barRods: [BarChartRodData(toY: 10, color: Colors.green)]),
-          BarChartGroupData(
-              x: 1, barRods: [BarChartRodData(toY: 2, color: Colors.green)]),
-          BarChartGroupData(
-              x: 2, barRods: [BarChartRodData(toY: 8, color: Colors.green)]),
-          BarChartGroupData(
-              x: 3, barRods: [BarChartRodData(toY: 14, color: Colors.green)]),
-          BarChartGroupData(
-              x: 4, barRods: [BarChartRodData(toY: 15, color: Colors.green)]),
-          BarChartGroupData(
-              x: 5, barRods: [BarChartRodData(toY: 10, color: Colors.green)]),
-          BarChartGroupData(
-              x: 6, barRods: [BarChartRodData(toY: 7, color: Colors.green)]),
-          BarChartGroupData(
-              x: 7, barRods: [BarChartRodData(toY: 5, color: Colors.green)]),
-          BarChartGroupData(
-              x: 8, barRods: [BarChartRodData(toY: 5, color: Colors.green)]),
-          BarChartGroupData(
-              x: 9, barRods: [BarChartRodData(toY: 5, color: Colors.green)]),
-          BarChartGroupData(
-              x: 10, barRods: [BarChartRodData(toY: 5, color: Colors.green)]),
-          BarChartGroupData(
-              x: 11, barRods: [BarChartRodData(toY: 5, color: Colors.green)]),
-        ];
-      case 'Y':
-        return [
-          BarChartGroupData(
-              x: 0, barRods: [BarChartRodData(toY: 7, color: Colors.green)]),
-          BarChartGroupData(
-              x: 1, barRods: [BarChartRodData(toY: 5, color: Colors.green)]),
-          BarChartGroupData(
-              x: 2, barRods: [BarChartRodData(toY: 6, color: Colors.green)]),
-          BarChartGroupData(
-              x: 3, barRods: [BarChartRodData(toY: 4, color: Colors.green)]),
-          BarChartGroupData(
-              x: 4, barRods: [BarChartRodData(toY: 5, color: Colors.green)]),
-        ];
-      default:
-        return [];
+  @override
+  void initState() {
+    super.initState();
+    fetchGraphData(); // Fetch initial data
+  }
+
+  Future<void> fetchGraphData() async {
+    final phoneNumber = Mycontroller.getPhoneNumber();
+    final formattedPhoneNumber = phoneNumber.startsWith('+91') ? phoneNumber.substring(3) : phoneNumber;
+    final url = 'http://13.233.98.192:3000/payments/earning?type=${getTypeForTab(selectedTab)}&ownerMobileNo=$formattedPhoneNumber';
+
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data['amounts'] != null && data['amounts'].isNotEmpty) {
+          setState(() {
+            barGraphData = generateBarGraphData(data['amounts']);
+            maxY = data['amounts'].map<double>((amount) => amount.toDouble()).reduce((a, b) => a > b ? a : b) + 5; // Set maxY dynamically
+          });
+        } else {
+          setState(() {
+            barGraphData = generateBarGraphData(List.filled(getExpectedLength(selectedTab), 0));
+            maxY = 15; // Reset maxY if no data
+          });
+        }
+      } else {
+        print('Failed to fetch data: ${response.body}');
+        setState(() {
+          barGraphData = generateBarGraphData(List.filled(getExpectedLength(selectedTab), 0));
+          maxY = 15; // Reset maxY if fetch fails
+        });
+      }
+    } catch (e) {
+      print('Error fetching data: $e');
+      setState(() {
+        barGraphData = generateBarGraphData(List.filled(getExpectedLength(selectedTab), 0));
+        maxY = 15; // Reset maxY if error occurs
+      });
     }
+  }
+
+  String getTypeForTab(String tab) {
+    switch (tab) {
+      case 'D':
+        return 'daily';
+      case 'W':
+        return 'weekly';
+      case 'M':
+        return 'monthly';
+      case 'Y':
+        return 'yearly';
+      default:
+        return 'daily';
+    }
+  }
+
+  int getExpectedLength(String tab) {
+    switch (tab) {
+      case 'D':
+        return 7; // 7 days for daily
+      case 'W':
+        return 4; // 4 weeks for weekly
+      case 'M':
+        return 12; // 12 months for monthly
+      case 'Y':
+        return 5; // 5 years for yearly
+      default:
+        return 0;
+    }
+  }
+
+  List<BarChartGroupData> generateBarGraphData(List<dynamic> amounts) {
+    return List<BarChartGroupData>.generate(amounts.length, (index) {
+      return BarChartGroupData(
+        x: index,
+        barRods: [BarChartRodData(toY: amounts[index].toDouble(), color: Colors.green)],
+      );
+    });
   }
 
   void onTabSelected(String tab) {
     setState(() {
       selectedTab = tab;
+      fetchGraphData(); // Fetch data for the selected tab
     });
   }
 
@@ -123,8 +132,9 @@ class _HomePageState extends State<HomePage> {
               ),
               const SizedBox(height: 20),
               BarGraph(
-                barGroups: getGraphData(),
+                barGroups: barGraphData,
                 selectedTab: selectedTab,
+                maxY: maxY, // Pass the dynamic maxY value
                 onTabSelected: onTabSelected,
               ),
               const Spacer(),
@@ -144,7 +154,8 @@ class InfoCard extends StatelessWidget {
   final String onlineAmount;
   final String offlineAmount;
 
-  const InfoCard({super.key, 
+  const InfoCard({
+    super.key,
     required this.title,
     required this.onlineAmount,
     required this.offlineAmount,
@@ -201,11 +212,14 @@ class InfoCard extends StatelessWidget {
 class BarGraph extends StatelessWidget {
   final List<BarChartGroupData> barGroups;
   final String selectedTab;
+  final double maxY; // Added maxY parameter
   final Function(String) onTabSelected;
 
-  const BarGraph({super.key, 
+  const BarGraph({
+    super.key,
     required this.barGroups,
     required this.selectedTab,
+    required this.maxY, // Required maxY parameter
     required this.onTabSelected,
   });
 
@@ -245,7 +259,7 @@ class BarGraph extends StatelessWidget {
             height: 200,
             child: BarChart(
               BarChartData(
-                maxY: 15,
+                maxY: maxY, // Use the dynamic maxY value
                 barGroups: barGroups,
                 titlesData: FlTitlesData(
                   leftTitles: AxisTitles(
@@ -257,7 +271,78 @@ class BarGraph extends StatelessWidget {
                           color: Colors.white,
                           fontSize: 12,
                         );
-                        return Text(value.toInt().toString(), style: style);
+                        if (selectedTab == 'D') {
+                          switch (value.toInt()) {
+                            case 0:
+                              return Text('Mon', style: style);
+                            case 1:
+                              return Text('Tue', style: style);
+                            case 2:
+                              return Text('Wed', style: style);
+                            case 3:
+                              return Text('Thu', style: style);
+                            case 4:
+                              return Text('Fri', style: style);
+                            case 5:
+                              return Text('Sat', style: style);
+                            case 6:
+                              return Text('Sun', style: style);
+                          }
+                        } else if (selectedTab == 'W') {
+                          switch (value.toInt()) {
+                            case 0:
+                              return Text('Week 1', style: style);
+                            case 1:
+                              return Text('Week 2', style: style);
+                            case 2:
+                              return Text('Week 3', style: style);
+                            case 3:
+                              return Text('Week 4', style: style);
+                            case 4:
+                              return Text('Week 5', style: style);
+                          }
+                        } else if (selectedTab == 'M') {
+                          switch (value.toInt()) {
+                            case 0:
+                              return Text('Jan', style: style);
+                            case 1:
+                              return Text('Feb', style: style);
+                            case 2:
+                              return Text('Mar', style: style);
+                            case 3:
+                              return Text('Apr', style: style);
+                            case 4:
+                              return Text('May', style: style);
+                            case 5:
+                              return Text('Jun', style: style);
+                            case 6:
+                              return Text('Jul', style: style);
+                            case 7:
+                              return Text('Aug', style: style);
+                            case 8:
+                              return Text('Sep', style: style);
+                            case 9:
+                              return Text('Oct', style: style);
+                            case 10:
+                              return Text('Nov', style: style);
+                            case 11:
+                              return Text('Dec', style: style);
+                          }
+                        } else if (selectedTab == 'Y') {
+                          switch (value.toInt()) {
+                            case 0:
+                              return Text('2020', style: style);
+                            case 1:
+                              return Text('2021', style: style);
+                            case 2:
+                              return Text('2022', style: style);
+                            case 3:
+                              return Text('2023', style: style);
+                            case 4:
+                              return Text('2024', style: style);
+                          }
+                        }
+                        return Text('', style: style);
                       },
                     ),
                   ),
@@ -272,75 +357,75 @@ class BarGraph extends StatelessWidget {
                         if (selectedTab == 'D') {
                           switch (value.toInt()) {
                             case 0:
-                              return const Text('Mon', style: style);
+                              return Text('Mon', style: style);
                             case 1:
-                              return const Text('Tue', style: style);
+                              return Text('Tue', style: style);
                             case 2:
-                              return const Text('Wed', style: style);
+                              return Text('Wed', style: style);
                             case 3:
-                              return const Text('Thu', style: style);
+                              return Text('Thu', style: style);
                             case 4:
-                              return const Text('Fri', style: style);
+                              return Text('Fri', style: style);
                             case 5:
-                              return const Text('Sat', style: style);
+                              return Text('Sat', style: style);
                             case 6:
-                              return const Text('Sun', style: style);
+                              return Text('Sun', style: style);
                           }
                         } else if (selectedTab == 'W') {
                           switch (value.toInt()) {
                             case 0:
-                              return const Text('Week 1', style: style);
+                              return Text('Week 1', style: style);
                             case 1:
-                              return const Text('Week 2', style: style);
+                              return Text('Week 2', style: style);
                             case 2:
-                              return const Text('Week 3', style: style);
+                              return Text('Week 3', style: style);
                             case 3:
-                              return const Text('Week 4', style: style);
+                              return Text('Week 4', style: style);
                             case 4:
-                              return const Text('Week 5', style: style);
+                              return Text('Week 5', style: style);
                           }
                         } else if (selectedTab == 'M') {
                           switch (value.toInt()) {
                             case 0:
-                              return const Text('Jan', style: style);
+                              return Text('Jan', style: style);
                             case 1:
-                              return const Text('Feb', style: style);
+                              return Text('Feb', style: style);
                             case 2:
-                              return const Text('Mar', style: style);
+                              return Text('Mar', style: style);
                             case 3:
-                              return const Text('Apr', style: style);
+                              return Text('Apr', style: style);
                             case 4:
-                              return const Text('May', style: style);
+                              return Text('May', style: style);
                             case 5:
-                              return const Text('Jun', style: style);
+                              return Text('Jun', style: style);
                             case 6:
-                              return const Text('Jul', style: style);
+                              return Text('Jul', style: style);
                             case 7:
-                              return const Text('Aug', style: style);
+                              return Text('Aug', style: style);
                             case 8:
-                              return const Text('Sep', style: style);
+                              return Text('Sep', style: style);
                             case 9:
-                              return const Text('Oct', style: style);
+                              return Text('Oct', style: style);
                             case 10:
-                              return const Text('Nov', style: style);
+                              return Text('Nov', style: style);
                             case 11:
-                              return const Text('Dec', style: style);
+                              return Text('Dec', style: style);
                           }
                         } else if (selectedTab == 'Y') {
                           switch (value.toInt()) {
                             case 0:
-                              return const Text('2020', style: style);
+                              return Text('2020', style: style);
                             case 1:
-                              return const Text('2021', style: style);
+                              return Text('2021', style: style);
                             case 2:
-                              return const Text('2022', style: style);
+                              return Text('2022', style: style);
                             case 3:
-                              return const Text('2023', style: style);
+                              return Text('2023', style: style);
                             case 4:
-                              return const Text('2024', style: style);
+                              return Text('2024', style: style);
                           }
                         }
-                        return const Text('', style: style);
+                        return Text('', style: style);
                       },
                     ),
                   ),
@@ -365,7 +450,8 @@ class ToggleButton extends StatelessWidget {
   final bool isActive;
   final VoidCallback onTap;
 
-  const ToggleButton({super.key, 
+  const ToggleButton({
+    super.key,
     required this.label,
     required this.isActive,
     required this.onTap,

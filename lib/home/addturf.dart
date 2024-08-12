@@ -50,13 +50,15 @@ class _TurfPageState extends State<TurfPage> {
   ];
 
   void navigateToSlotsPage() async {
-    final result = await Navigator.push(
+    final updatedSlots = await Navigator.push<List<Map<String, dynamic>>>(
       context,
-      MaterialPageRoute(builder: (context) => SlotTimingsPage(slots: slots)),
+      MaterialPageRoute(
+        builder: (context) => SlotTimingsPage(slots: slots),
+      ),
     );
-    if (result != null) {
+    if (updatedSlots != null) {
       setState(() {
-        slots = result;
+        slots = updatedSlots;
       });
     }
   }
@@ -218,7 +220,7 @@ class _TurfPageState extends State<TurfPage> {
                 const SizedBox(height: 22),
                 ElevatedButton(
                   onPressed: navigateToSlotsPage,
-                  child: const Text('Add Slot Timings'),
+                  child: const Text('Manage Slots'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
                     foregroundColor: Colors.white,

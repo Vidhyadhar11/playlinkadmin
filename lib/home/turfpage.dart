@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:playlinkadmin/home/edit1.dart';
+import 'package:playlinkadmin/home/details.dart';
 import 'package:playlinkadmin/models/turfcontroller.dart';
+import 'package:playlinkadmin/uicomponents/cards.dart';
 import 'package:playlinkadmin/uicomponents/elements.dart';
-// import 'package:http/http.dart' as http;
 
 class Turfspage extends StatelessWidget {
   const Turfspage({super.key});
@@ -30,93 +30,98 @@ class Turfspage extends StatelessWidget {
         } else if (controller.apiResponse.isEmpty) {
           return const Center(child: Text('No turfs found', style: TextStyle(color: Colors.white)));
         } else {
-          return ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: controller.apiResponse.length,
-            itemBuilder: (context, index) {
-              final turf = controller.apiResponse[index];
-              return GestureDetector(
-                onTap: () {
-                  Get.to(() =>const TurfDetailsPage());
-                },
-                child: Card(
-                  color: Colors.grey[900],
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Stack(
-                        children: [
-                          ClipRRect(
-                            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-                            child: Image.network(
-                              turf.imageUrl,
-                              height: 120,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          Positioned(
-                            bottom: 8,
-                            left: 8,
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: Colors.black.withOpacity(0.6),
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              child: Text(
-                                turf.category,
-                                style: const TextStyle(color: Colors.white, fontSize: 12),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+          return RefreshIndicator(
+            onRefresh: () async {
+              controller.fetchSportsFields();
+            },
+            child: ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: controller.apiResponse.length,
+              itemBuilder: (context, index) {
+                final turf = controller.apiResponse[index];
+                return GestureDetector(
+                  onTap: () {
+                    Get.to(() => TurfDetailsPage(turf: turf));
+                  },
+                  child: Card(
+                    color: Colors.grey[900],
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Stack(
                           children: [
-                            Text(
-                              turf.turfName,
-                              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                            ClipRRect(
+                              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                              child: Image.network(
+                                turf.imageUrl,
+                                height: 120,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                              ),
                             ),
-                            const SizedBox(height: 4),
-                            Row(
-                              children: [
-                                const Icon(Icons.location_on, color: Colors.white, size: 14),
-                                const SizedBox(width: 4),
-                                Expanded(
-                                  child: Text(
-                                    turf.location,
-                                    style: const TextStyle(color: Colors.white70, fontSize: 12),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
+                            Positioned(
+                              bottom: 8,
+                              left: 8,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withOpacity(0.6),
+                                  borderRadius: BorderRadius.circular(4),
                                 ),
-                              ],
-                            ),
-                            const SizedBox(height: 8),
-                            Row(
-                              children: [
-                                const Icon(Icons.star, color: Colors.yellow, size: 14),
-                                const SizedBox(width: 4),
-                                Text(
-                                  turf.rating.toString(),
+                                child: Text(
+                                  turf.category,
                                   style: const TextStyle(color: Colors.white, fontSize: 12),
                                 ),
-                              ],
+                              ),
                             ),
                           ],
                         ),
-                      ),
-                    ],
+                        Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                turf.turfName,
+                                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                              ),
+                              const SizedBox(height: 4),
+                              Row(
+                                children: [
+                                  const Icon(Icons.location_on, color: Colors.white, size: 14),
+                                  const SizedBox(width: 4),
+                                  Expanded(
+                                    child: Text(
+                                      turf.location,
+                                      style: const TextStyle(color: Colors.white70, fontSize: 12),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  const Icon(Icons.star, color: Colors.yellow, size: 14),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    turf.rating.toString(),
+                                    style: const TextStyle(color: Colors.white, fontSize: 12),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           );
         }
       }),

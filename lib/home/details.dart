@@ -1,8 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:playlinkadmin/home/addturf.dart';
+import 'package:playlinkadmin/home/editpage.dart';
+import 'package:playlinkadmin/models/turfpage_api.dart';
+import 'package:playlinkadmin/slots/slotsedit.dart';
+import 'package:playlinkadmin/slots/slottiming.dart';
 
 class TurfDetailsPage extends StatelessWidget {
-  const TurfDetailsPage({super.key});
+  final SportsFieldApi turf;
+
+   const TurfDetailsPage({super.key, required this.turf});
+
+   Future<void> deleteTurf(String id) async {
+    final url = 'http://13.233.98.192:3000/turf/id/$id';
+    final response = await http.delete(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      print('Turf deleted successfully');
+    } else {
+      print('Failed to delete turf: ${response.body}');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +48,8 @@ class TurfDetailsPage extends StatelessWidget {
                     Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8.0),
-                        image: const DecorationImage(
-                          image: AssetImage('assets/images/turf_image.png'),
+                        image: DecorationImage(
+                          image: NetworkImage(turf.imageUrl), // Use turf image URL
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -40,49 +58,43 @@ class TurfDetailsPage extends StatelessWidget {
                         children: [
                           Positioned(
                             bottom: 10,
-                            left: 10,
+                            left: 0,
                             child: Container(
                               color: Colors.black54,
                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                              child: const Text('Football', style: TextStyle(color: Colors.white)),
-                            ),
-                          ),
-                          Positioned(
-                            bottom: 10,
-                            right: 10,
-                            child: Container(
-                              color: Colors.black54,
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                              child: const Text('15% Off', style: TextStyle(color: Colors.white)),
+                              child: Text(turf.category, style: const TextStyle(color: Colors.white)),
                             ),
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 10),
-                    const Text(
-                      'KPHB, Hyderabad',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    const SizedBox(height: 20),
+                    Text(
+                      turf.turfName,
+                      style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
                     ),
-                    const Row(
+                    Row(
+                      children: [const SizedBox(height: 10),
+                    Text(
+                      turf.location,
+                      style: const TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                    SizedBox(width: 30,),
+                    Row(
                       children: [
-                        Icon(Icons.star, color: Colors.yellow, size: 16),
-                        SizedBox(width: 4),
+                        const Icon(Icons.star, color: Colors.yellow, size: 16),
+                        const SizedBox(width: 4),
                         Text(
-                          '4.4',
-                          style: TextStyle(color: Colors.white, fontSize: 16),
+                          turf.rating.toString(),
+                          style: const TextStyle(color: Colors.white, fontSize: 16),
                         ),
                       ],
-                    ),
-                    const SizedBox(height: 20),
-                    const Text(
-                      'Star Strikers',
-                      style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+                    ),],
                     ),
                     const SizedBox(height: 10),
-                    const Text(
-                      'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.',
-                      style: TextStyle(color: Colors.white54, fontSize: 14),
+                    Text(
+                      turf.description,
+                      style: const TextStyle(color: Colors.white54, fontSize: 14),
                     ),
                     const SizedBox(height: 20),
                     const Text(
@@ -90,16 +102,16 @@ class TurfDetailsPage extends StatelessWidget {
                       style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 10),
-                    // Amenities arranged closer together
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        AmenityWidget(icon: Icons.local_parking, label: 'Parking'),
-                        AmenityWidget(icon: Icons.wc, label: 'Rest Room'),
-                        AmenityWidget(icon: Icons.local_cafe, label: 'Cafeteria'),
-                        AmenityWidget(icon: Icons.medical_services, label: 'First Aid Kit'),
-                      ],
-                    ),
+                    Wrap(
+                          spacing: 20,
+                          runSpacing: 20,
+                          children: [
+                            _buildAmenityItem(Icons.local_parking, 'Parking'),
+                            _buildAmenityItem(Icons.wc, 'Rest Room'),
+                            _buildAmenityItem(Icons.local_cafe, 'Cafeteria'),
+                            _buildAmenityItem(Icons.medical_services, 'First Aid Kit'),
+                          ],
+                        ),
                     const SizedBox(height: 30),
                   ],
                 ),
@@ -110,7 +122,7 @@ class TurfDetailsPage extends StatelessWidget {
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0), // Add extra space around the Row
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -119,7 +131,7 @@ class TurfDetailsPage extends StatelessWidget {
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => const TurfPage()),
+                                MaterialPageRoute(builder: (context) => EditTurfPage(turf: turf)),
                               );
                             },
                             style: ElevatedButton.styleFrom(
@@ -139,14 +151,16 @@ class TurfDetailsPage extends StatelessWidget {
                             ),
                           ),
                         ),
-                        const SizedBox(width: 10), // Add some spacing between buttons
+                        const SizedBox(width: 10),
                         Flexible(
                           child: ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              deleteTurf(turf.id);
+                            },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white, // Dark background color
+                              backgroundColor: Colors.white,
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30), // Rounded corners
+                                borderRadius: BorderRadius.circular(30),
                               ),
                               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                             ),
@@ -168,15 +182,15 @@ class TurfDetailsPage extends StatelessWidget {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        // Navigator.push(
-                          // context,
-                          // MaterialPageRoute(builder: (context) => SlotTimingsPage()),
-                        // );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => SlotTimingsPage(slots: turf.slots, turfId: turf.id)),
+                        );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white, // Dark background color
+                        backgroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30), // Rounded corners
+                          borderRadius: BorderRadius.circular(30),
                         ),
                         padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
                       ),
@@ -192,6 +206,16 @@ class TurfDetailsPage extends StatelessWidget {
     );
   }
 }
+
+Widget _buildAmenityItem(IconData icon, String label) {
+    return Column(
+      children: [
+        Icon(icon, color: Colors.white, size: 24),
+        const SizedBox(height: 4),
+        Text(label, style: const TextStyle(color: Colors.white, fontSize: 12)),
+      ],
+    );
+  }
 
 class AmenityWidget extends StatelessWidget {
   final IconData icon;

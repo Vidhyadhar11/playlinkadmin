@@ -1,224 +1,201 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:playlinkadmin/models/turfpage_api.dart';
 
 class SlotTimingsPage extends StatefulWidget {
   final List<Map<String, dynamic>> slots;
+  final String? turfId; // Make turfId optional
 
-  const SlotTimingsPage({super.key, required this.slots});
+  const SlotTimingsPage({Key? key, required this.slots, this.turfId}) : super(key: key); // Update constructor
 
   @override
   _SlotTimingsPageState createState() => _SlotTimingsPageState();
 }
 
 class _SlotTimingsPageState extends State<SlotTimingsPage> {
-  late List<Map<String, dynamic>> slotRanges;
-  List<Map<String, dynamic>> generatedSlots = [];
+  List<Map<String, dynamic>> _slots = [];
 
   @override
   void initState() {
     super.initState();
-    slotRanges = widget.slots.map((slot) {
-      List<String> times = slot['time'].split(' - ');
+    _slots = widget.slots.isNotEmpty
+        ? List.from(widget.slots)
+        : [{'time': '00:00 - 00:00', 'price': '0'}];
+    
+    print('Initial slots: $_slots');
+  }
+
+  void _addSlot() {
+    print('Adding new slot with price type: ${_slots.last['price'].runtimeType}');
+    Map<String, dynamic> newSlot = {
+      'time': '00:00 - 00:00',
+      'price': '0',
+    };
+
+    Map<String, String> newSlotString = newSlot.map((key, value) => MapEntry(key, value.toString()));
+
+    setState(() {
+      _slots.add(newSlotString);
+    });
+    print('New slots list: $_slots');
+  }
+
+  void _removeSlot(int index) {
+    setState(() {
+      _slots.removeAt(index);
+    });
+    print('Slot removed. Current slots: $_slots');
+  }
+
+  void _updateSlot(int index, String key, String value) {
+    setState(() {
+      _slots[index][key] = value;
+    });
+    print('Slot updated. Current slots: $_slots');
+  }
+
+  Future<void> _saveSlots() async {
+    // Format slots to ensure 'time' field is a string
+    final formattedSlots = _slots.map((slot) {
       return {
-        'startTime': _parseTimeString(times[0]),
-        'endTime': _parseTimeString(times[1]),
-        'price': slot['price'],
+        'time': slot['time'].toString(),
+        'price': slot['price'].toString(),
       };
     }).toList();
-    generateSlots();
-  }
 
-  TimeOfDay _parseTimeString(String timeString) {
-    List<String> parts = timeString.split(':');
-    int hour = int.parse(parts[0]);
-    int minute = int.parse(parts[1].split(' ')[0]);
-    if (timeString.toLowerCase().contains('pm') && hour != 12) {
-      hour += 12;
-    }
-    return TimeOfDay(hour: hour, minute: minute);
-  }
+    print('Formatted slots: $formattedSlots');
 
-  void generateSlots() {
-    generatedSlots.clear();
-    for (var range in slotRanges) {
-      TimeOfDay startTime = range['startTime'];
-      TimeOfDay endTime = range['endTime'];
-      int price = range['price'];
-
-      while (startTime.hour < endTime.hour || 
-             (startTime.hour == endTime.hour && startTime.minute < endTime.minute)) {
-        TimeOfDay slotEndTime = TimeOfDay(
-          hour: (startTime.hour + 1) % 24,
-          minute: startTime.minute,
-        );
-        
-        if (slotEndTime.hour > endTime.hour || 
-            (slotEndTime.hour == endTime.hour && slotEndTime.minute > endTime.minute)) {
-          slotEndTime = endTime;
-        }
-
-        generatedSlots.add({
-          'time': '${_formatTimeOfDay(startTime)} - ${_formatTimeOfDay(slotEndTime)}',
-          'price': price,
+    if (widget.turfId != null) {
+      final url = Uri.parse('http://13.233.98.192:3000/turf/id/${widget.turfId}');
+      
+      try {
+        final requestBody = jsonEncode({
+          'slots': formattedSlots,
         });
 
-        startTime = slotEndTime;
+        print('Request body: $requestBody');
+
+        final response = await http.patch(
+          url,
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: requestBody,
+        );
+
+        print('Response status code: ${response.statusCode}');
+        print('Response body: ${response.body}');
+
+        if (response.statusCode == 200) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Slots updated successfully')),
+          );
+        } else {
+          throw Exception('Failed to update slots: ${response.body}');
+        }
+      } catch (e) {
+        print('Error updating slots: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error updating slots: $e')),
+        );
       }
+    } else {
+      print('No turfId provided, skipping API call');
     }
+
+    // Return the formatted slots
+    Navigator.of(context).pop(formattedSlots);
   }
 
-  String _formatTimeOfDay(TimeOfDay time) {
-    final hour = time.hourOfPeriod;
-    final minute = time.minute.toString().padLeft(2, '0');
-    final period = time.period == DayPeriod.am ? 'AM' : 'PM';
-    return '$hour:$minute $period';
+  // Example of converting _slots before passing it to a function expecting Map<String, String>
+  List<Map<String, String>> convertDynamicToStrictString(List<Map<String, dynamic>> dynamicList) {
+    return dynamicList.map((map) {
+      return map.map((key, value) => MapEntry(key, value.toString()));
+    }).toList();
+  }
+
+  String? getPrice(int index) {
+    var price = _slots[index]['price'];
+    return price?.toString();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[900],
       appBar: AppBar(
-        automaticallyImplyLeading: false, // Remove the default back icon
-        title: const Text('Slot Timings', style: TextStyle(color: Colors.green)),
-        backgroundColor: Colors.grey[900],
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
+        title: const Text('Manage Slots'),
+        backgroundColor: Colors.green,
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ...slotRanges.map((range) => Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text('${_formatTimeOfDay(range['startTime'])} - ${_formatTimeOfDay(range['endTime'])}, Price: ${range['price']}', 
-                        style: const TextStyle(color: Colors.white)),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.red),
-                      onPressed: () {
-                        setState(() {
-                          slotRanges.remove(range);
-                          generateSlots();
-                        });
-                      },
-                    ),
-                  ],
-                ),
-              )).toList(),
-              ElevatedButton(
-                child: const Text('Add Slot Range'),
-                onPressed: () async {
-                  await showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      TimeOfDay startTime = const TimeOfDay(hour: 7, minute: 0);
-                      TimeOfDay endTime = const TimeOfDay(hour: 22, minute: 0);
-                      String price = '';
-                      return AlertDialog(
-                        backgroundColor: Colors.grey[800],
-                        title: const Text('Add Slot Range', style: TextStyle(color: Colors.green)),
-                        content: StatefulBuilder(
-                          builder: (BuildContext context, StateSetter setState) {
-                            return Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: TextButton(
-                                        child: Text('Start Time: ${startTime.format(context)}', style: const TextStyle(color: Colors.white)),
-                                        onPressed: () async {
-                                          TimeOfDay? picked = await showTimePicker(
-                                            context: context,
-                                            initialTime: startTime,
-                                          );
-                                          if (picked != null) setState(() => startTime = picked);
-                                        },
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: TextButton(
-                                        child: Text('End Time: ${endTime.format(context)}', style: const TextStyle(color: Colors.white)),
-                                        onPressed: () async {
-                                          TimeOfDay? picked = await showTimePicker(
-                                            context: context,
-                                            initialTime: endTime,
-                                          );
-                                          if (picked != null) setState(() => endTime = picked);
-                                        },
-                                      ),
-                                    ),
-                                  ],
+      body: Column(
+        children: [
+          Expanded(
+            child: _slots.isEmpty
+                ? const Center(child: Text('No slots available'))
+                : ListView.builder(
+                    itemCount: _slots.length,
+                    itemBuilder: (context, index) {
+                      return Card(
+                        child: ListTile(
+                          title: Row(
+                            children: [
+                              Expanded(
+                                child: TextFormField(
+                                  initialValue: _slots[index]['time'],
+                                  decoration: const InputDecoration(labelText: 'Time'),
+                                  onChanged: (value) => _updateSlot(index, 'time', value),
                                 ),
-                                TextField(
-                                  decoration: const InputDecoration(
-                                    labelText: 'Price per hour',
-                                    labelStyle: TextStyle(color: Colors.white),
-                                  ),
+                              ),
+                              Expanded(
+                                child: TextFormField(
+                                  initialValue: getPrice(index) ?? 'Default Value', // Convert to String
+                                  decoration: const InputDecoration(labelText: 'Price'),
                                   keyboardType: TextInputType.number,
-                                  onChanged: (value) => price = value,
-                                  style: const TextStyle(color: Colors.white),
+                                  onChanged: (value) => _updateSlot(index, 'price', value),
                                 ),
-                              ],
-                            );
-                          }
-                        ),
-                        actions: [
-                          TextButton(
-                            child: const Text('Add', style: TextStyle(color: Colors.green)),
-                            onPressed: () {
-                              if (price.isNotEmpty) {
-                                setState(() {
-                                  slotRanges.add({
-                                    'startTime': startTime,
-                                    'endTime': endTime,
-                                    'price': int.parse(price),
-                                  });
-                                  generateSlots();
-                                });
-                                Navigator.of(context).pop();
-                              }
-                            },
+                              ),
+                            ],
                           ),
-                        ],
+                          trailing: IconButton(
+                            icon: const Icon(Icons.delete),
+                            onPressed: () => _removeSlot(index),
+                          ),
+                        ),
                       );
                     },
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  foregroundColor: Colors.white,
-                ),
-              ),
-              const SizedBox(height: 20),
-              const Text('Generated Slots:', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
-              ...generatedSlots.map((slot) => Padding(
-                padding: const EdgeInsets.only(bottom: 4.0),
-                child: Text('${slot['time']}, Price: ${slot['price']}', style: const TextStyle(color: Colors.white)),
-              )).toList(),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                child: const Text('Save Slots'),
-                onPressed: () {
-                  Navigator.pop(context, generatedSlots);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  foregroundColor: Colors.white,
-                ),
-              ),
-            ],
+                  ),
           ),
-        ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: _addSlot,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size(0, 50), // full height button
+                    ),
+                    child: const Text('Add Slot'),
+                  ),
+                ),
+                SizedBox(width: 16), // Add some space between buttons
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: _saveSlots,
+                    child: const Text('Save Slots'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white,
+                      minimumSize: Size(0, 50), // full height button
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

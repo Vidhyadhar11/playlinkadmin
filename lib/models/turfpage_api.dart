@@ -11,6 +11,7 @@ class SportsFieldApi {
   final int discounts;
   final String id;
   bool isLiked;
+  final String? image; // Added this line
 
   SportsFieldApi({
     required this.imageUrl,
@@ -25,6 +26,7 @@ class SportsFieldApi {
     required this.discounts,
     required this.id,
     this.isLiked = false,
+    this.image, // Added this line
   });
 
   factory SportsFieldApi.fromsnapshot(Map<String, dynamic> json) {
@@ -57,6 +59,7 @@ class SportsFieldApi {
       discounts: json['discounts'] != null ? int.parse(json['discounts'].toString()) : 0,
       id: json['_id'] ?? '',
       isLiked: false,
+      image: json['image'], // Added this line
     );
   }
 
