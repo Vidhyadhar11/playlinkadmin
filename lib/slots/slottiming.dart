@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:playlinkadmin/models/turfpage_api.dart';
 
 class SlotTimingsPage extends StatefulWidget {
   final List<Map<String, dynamic>> slots;
   final String? turfId; // Make turfId optional
 
-  const SlotTimingsPage({Key? key, required this.slots, this.turfId}) : super(key: key); // Update constructor
+  const SlotTimingsPage({super.key, required this.slots, this.turfId}); // Update constructor
 
   @override
   _SlotTimingsPageState createState() => _SlotTimingsPageState();

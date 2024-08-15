@@ -159,58 +159,62 @@ void initState() {
   }
 
   Future<void> updateTurf() async {
-  final url = Uri.parse('http://13.233.98.192:3000/turf/id/${widget.turf.id}');
-  var request = http.MultipartRequest('PATCH', url);
+    final url = Uri.parse('http://13.233.98.192:3000/turf/id/${widget.turf.id}');
+    var request = http.MultipartRequest('PATCH', url);
 
-  // Prepare the data in the format that works
-  Map<String, dynamic> updateData = {
-    'category': selectedCategory ?? widget.turf.category,
-    'turfname': turfName ?? widget.turf.turfName,
-    'location': selectedLocation ?? widget.turf.location,
-    'playwithstranger': false,
-    'court': courts ?? widget.turf.courts.toString(),
-    'description': turfDescription ?? widget.turf.description,
-    'amenties': [], // Assuming amenities are not being updated
-    'rating': double.parse(rating ?? widget.turf.rating.toString()).round(), // Convert to double then round to int
-    'slots': slots.map((slot) => {
-      'time': slot['time'],
-      'price': int.parse(slot['price'].toString())
-    }).toList(),
-    'ownerMobileNo': phoneNumber
-  };
+    // Prepare the data in the format that works
+    Map<String, dynamic> updateData = {
+      'category': selectedCategory ?? widget.turf.category,
+      'turfname': turfName ?? widget.turf.turfName,
+      'location': selectedLocation ?? widget.turf.location,
+      'playwithstranger': false,
+      'court': courts ?? widget.turf.courts.toString(),
+      'description': turfDescription ?? widget.turf.description,
+      'amenties': [], // Assuming amenities are not being updated
+      'rating': double.parse(rating ?? widget.turf.rating.toString()).round(), // Convert to double then round to int
+      'slots': slots.map((slot) => {
+        'time': slot['time'],
+        'price': int.parse(slot['price'].toString())
+      }).toList(),
+      'ownerMobileNo': phoneNumber
+    };
 
-  // Add all fields as a single JSON string
-  request.fields['data'] = jsonEncode(updateData);
+    // Add all fields as a single JSON string
+    request.fields['data'] = jsonEncode(updateData);
 
-  // Add image only if a new image is selected
-  if (_image != null) {
-    request.files.add(await http.MultipartFile.fromPath('image', _image!.path));
-  }
+    // Add image only if a new image is selected
+    if (_image != null) {
+      request.files.add(await http.MultipartFile.fromPath('image', _image!.path));
+    }
 
-  try {
-    print('Sending update request...');
-    print('Update data: ${jsonEncode(updateData)}');
-    var streamedResponse = await request.send();
-    var response = await http.Response.fromStream(streamedResponse);
+    try {
+      print('Sending update request...');
+      print('Update data: ${jsonEncode(updateData)}');
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
 
-    print('Response received: ${response.statusCode}');
-    print('Response body: ${response.body}');
+      print('Response received: ${response.statusCode}');
+      print('Response body: ${response.body}');
 
     if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Turf updated successfully')),
+        );
+        Navigator.pop(context);
+      } else {
+        print('Failed to update turf. Status: ${response.statusCode}');
+        print('Response body: ${response.body}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to update turf. Status: ${response.statusCode}')),
+        );
+      }
+    } catch (e) {
+      print('Error updating turf: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Turf updated successfully')),
+        SnackBar(content: Text('Error updating turf: $e')),
       );
-      Navigator.pop(context);
-    } else {
-      throw Exception('Failed to update turf. Status: ${response.statusCode}');
     }
-  } catch (e) {
-    print('Error updating turf: $e');
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Error updating turf: $e')),
-    );
   }
-}
 // }
 
 // Future<void> updateTurf() async {

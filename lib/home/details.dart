@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:playlinkadmin/home/addturf.dart';
 import 'package:playlinkadmin/home/editpage.dart';
 import 'package:playlinkadmin/models/turfpage_api.dart';
-import 'package:playlinkadmin/slots/slotsedit.dart';
 import 'package:playlinkadmin/slots/slottiming.dart';
 
 class TurfDetailsPage extends StatelessWidget {

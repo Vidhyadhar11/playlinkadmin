@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:playlinkadmin/home/details.dart';
 import 'package:playlinkadmin/models/turfcontroller.dart';
-import 'package:playlinkadmin/uicomponents/cards.dart';
 import 'package:playlinkadmin/uicomponents/elements.dart';
 
 class Turfspage extends StatelessWidget {
