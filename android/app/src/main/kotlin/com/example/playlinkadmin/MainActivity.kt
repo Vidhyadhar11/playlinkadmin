@@ -1,4 +1,4 @@
-package com.example.playlinkadmin
+package com.playlinkadmin
 
 import io.flutter.embedding.android.FlutterActivity
 
