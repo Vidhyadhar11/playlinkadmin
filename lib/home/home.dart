@@ -262,6 +262,7 @@ class _HomePageState extends State<HomePage> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30),
         ), backgroundColor: selectedGraph == graphKey ? Colors.green : Colors.grey[700],
+        foregroundColor: Colors.white,
       ),
       onPressed: () {
         setState(() {
