@@ -4,11 +4,12 @@ import 'package:get/get.dart';
 import 'package:playlinkadmin/models/mycontroller.dart';
 import 'package:playlinkadmin/models/turfpage_api.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TurfsController extends GetxController {
   var apiResponse = <SportsFieldApi>[].obs;
   var isLoading = true.obs;
-  final phoneNumber = Mycontroller.getPhoneNumber();
+
 
   @override
   void onInit() {
@@ -21,11 +22,13 @@ class TurfsController extends GetxController {
   void fetchSportsFields() async {
     try {
       isLoading(true);
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? phoneNumber = prefs.getString('phoneNumber');
       print('Current phone number: $phoneNumber');
-      final formattedPhoneNumber = phoneNumber.startsWith('+91') ? phoneNumber.substring(3) : phoneNumber;
+      final formattedPhoneNumber = phoneNumber!.startsWith('+91') ? phoneNumber.substring(3) : phoneNumber;
       print('Fetching sports fields for phone number: $formattedPhoneNumber');
 
-      final response = await http.get(Uri.parse('http://13.233.98.192:3000/turf/owner/$formattedPhoneNumber'));
+      final response = await http.get(Uri.parse('http://65.1.5.180:3000/turf/owner/$formattedPhoneNumber'));
       print('Response status code: ${response.statusCode}');
       print('Response body: ${response.body}');
 
