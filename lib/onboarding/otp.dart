@@ -6,6 +6,8 @@ import 'package:http/http.dart' as http;
 import 'package:playlinkadmin/home/home.dart';
 import 'package:playlinkadmin/models/mycontroller.dart';
 import 'package:playlinkadmin/models/api_config.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:playlinkadmin/onboarding/onboarding.dart';
 
 class EnterOTPScreen extends StatefulWidget {
   final String orderId;
@@ -14,7 +16,6 @@ class EnterOTPScreen extends StatefulWidget {
   const EnterOTPScreen({super.key, required this.orderId, required this.phoneNumber});
 
   @override
-  // ignore: library_private_types_in_public_api
   _EnterOTPScreenState createState() => _EnterOTPScreenState();
 }
 
@@ -113,12 +114,23 @@ class _EnterOTPScreenState extends State<EnterOTPScreen> {
     );
   }
 
+  void _handleLogout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('phoneNumber');
+    Get.offAll(() => const Onboarding());
+  }
+
   void _handleVerifyOTP() async {
+    var formatterphnno = widget.phoneNumber.replaceFirst('+91', '');
     String enteredOTP = myController.otpControllers.map((controller) => controller.text).join();
-    print('Verifying OTP for phone number: ${Mycontroller.getPhoneNumber()} with order ID: ${widget.orderId} and OTP: $enteredOTP');
+    print('Verifying OTP for phone number: $formatterphnno with order ID: ${widget.orderId} and OTP: $enteredOTP');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    print(widget.phoneNumber);
+    
+    await prefs.setString('phoneNumber', formatterphnno);
 
     try {
-      final response = await verifyOTP(Mycontroller.getPhoneNumber(), enteredOTP, widget.orderId);
+      final response = await verifyOTP(widget.phoneNumber, enteredOTP, widget.orderId);
       if (response != null && response['message'] == 'Admin User verified successfully') {
         await Get.offAll(() => HomePage());
       } else {
@@ -162,6 +174,7 @@ class _EnterOTPScreenState extends State<EnterOTPScreen> {
         return decodedResponse;
       } else {
         print('Failed to verify OTP. Status code: ${response.statusCode}');
+        print('Response body: ${response.body}');
         return null;
       }
     } catch (e) {
