@@ -124,31 +124,38 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  Future<List<dynamic>> fetchWeeklyData(String phoneNumber) async {
-    final formattedPhoneNumber = phoneNumber.startsWith('+91') ? phoneNumber.substring(3) : phoneNumber;
+  Future<Map<String, dynamic>> fetchWeeklyData(String phoneNumber) async {
+  final formattedPhoneNumber = phoneNumber.startsWith('+91') ? phoneNumber.substring(3) : phoneNumber;
 
-    final body = {
-      "ownerMobileNo": formattedPhoneNumber,
-    };
+  final body = {
+    "ownerMobileNo": formattedPhoneNumber,
+  };
 
-    try {
-      final response = await http.post(
-        Uri.parse("http://65.1.5.180:3000/payments/week"),
-        headers: {"Content-Type": "application/json"},
-        body: json.encode(body),
-      );
+  try {
+    final response = await http.post(
+      Uri.parse("http://65.1.5.180:3000/payments/week"),
+      headers: {"Content-Type": "application/json"},
+      body: json.encode(body),
+    );
 
-      if (response.statusCode == 200) {
-        return json.decode(response.body);
-      } else {
-        print('Failed to fetch weekly data: ${response.body}');
-        return [];
-      }
-    } catch (e) {
-      print('Error fetching weekly data: $e');
-      return [];
+    print('Response status: ${response.statusCode}'); // Debugging line
+    print('Response body: ${response.body}'); // Debugging line
+
+    if (response.statusCode == 200) {
+      var data = json.decode(response.body); // Assuming data is a Map<String, dynamic>
+      print('Data received: $data'); // Print the entire data
+      print('Amount: ${data['amount']}'); // Print the specific amount
+      return data; // Return the parsed JSON object (Map<String, dynamic>)
+    } else {
+      print('Failed to fetch weekly data: ${response.body}');
+      return {};
     }
+  } catch (e) {
+    print('Error fetching weekly data: $e');
+    return {};
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -159,38 +166,43 @@ class _HomePageState extends State<HomePage> {
           children: [
             _buildTopBar(),
             FutureBuilder(
-              future: SharedPreferences.getInstance().then((prefs) {
-                String? phoneNumber = prefs.getString('phoneNumber');
-                return fetchWeeklyData(phoneNumber!);
-              }),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else {
-                  final weeklyEarnings = snapshot.data.toString();
-                  print(weeklyEarnings);
-                  return Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Weekly Earnings",
-                          style: const TextStyle(color: Colors.green, fontSize: 24),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          weeklyEarnings,
-                          style: const TextStyle(color: Colors.white, fontSize: 20),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-              },
+  future: SharedPreferences.getInstance().then((prefs) {
+    String? phoneNumber = prefs.getString('phoneNumber');
+    return fetchWeeklyData(phoneNumber!); // Fetch weekly data with phone number
+  }),
+  builder: (context, snapshot) {
+    if (snapshot.connectionState == ConnectionState.waiting) {
+      return const Center(child: CircularProgressIndicator());
+    } else if (snapshot.hasError) {
+      return Center(child: Text('Error: ${snapshot.error}'));
+    } else if (!snapshot.hasData || (snapshot.data as Map<String, dynamic>).isEmpty) {
+      return Center(child: Text('No data available'));
+    } else {
+      // Cast snapshot.data to Map<String, dynamic> and extract amount
+      final data = snapshot.data as Map<String, dynamic>;
+      final amount = data["amount"] ?? 0; // Safely access the amount
+
+      return Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Weekly Earnings",
+              style: const TextStyle(color: Colors.green, fontSize: 24),
             ),
+            const SizedBox(height: 8),
+            Text(
+              'Amount: ₹$amount', // Display the amount with currency symbol
+              style: const TextStyle(color: Colors.white, fontSize: 20),
+            ),
+          ],
+        ),
+      );
+    }
+  },
+),
+
             const SizedBox(height: 20),
             _buildGraphSelectionButtons(),
             Padding(
